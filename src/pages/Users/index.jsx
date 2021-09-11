@@ -129,7 +129,7 @@ return(
                             <td>
                                 <div className="actbtns">
 
-                                    {user.user.role=='employee'? <a href="#" className="btn btn-info"><i className="fas fa-pencil-alt"></i></a>: <Link to={{pathname:"/add-employee",state:{userid:user.user.id} }} className="btn btn-success"><i className="fas fa-user-tie"></i></Link>}
+                                    {user.user.role=='employee'? <Link to={process.env.PUBLIC_URL + "/edit-employee/"+user.user.id} className="btn btn-info"><i className="fas fa-pencil-alt"></i></Link>: <Link to={{pathname:"/add-employee",state:{userid:user.user.id} }} className="btn btn-success"><i className="fas fa-user-tie"></i></Link>}
                                    
                                     
                                     <Button className="btn btn-danger" onClick={()=>

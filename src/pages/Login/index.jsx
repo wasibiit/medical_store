@@ -1,7 +1,7 @@
-import React from 'react';
+import React,{useState}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import { NavLink, Redirect } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 
@@ -11,53 +11,39 @@ toast.configure({
     draggable: false,
 });
 
-class Login extends React.Component{
+const Login =()=>{
 
-constructor(props){
-super(props);
-
-this.state = {
-bgimg:"img/loginimg.jpg",
-email:'',
-password:'',
-redirect:false
-}
+const [bgimg,setBgimg] = useState('img/loginimg.jpg');
+const [email,setEmail] = useState('');
+const [password,setPassword] = useState('');
 
 
-this.handleChange = this.handleChange.bind(this)
-this.handleSubmit = this.handleSubmit.bind(this)
-}
-
-
-
-handleChange(event){
-    this.setState({
-    [event.target.name] : event.target.value
-    })
-    }
-
-
-handleSubmit(event){
+const handleSubmit= async(event)=>{
 
 event.preventDefault();
 
 
-fetch(API_URL.url+'/login',{
+await fetch(API_URL.url+'/login',{
     method:"POST",
     headers: {
         "Origin": "*",               
         "Content-Type": "application/json",
         "Accept": "application/json",             
     },
-    body: JSON.stringify(this.state)
+    body: JSON.stringify({
+        "email": email,
+        "password": password,
+    })
 }).then((response)=>{
     response.json().then((result)=>{
        
         localStorage.setItem('token',result.user.token);
+        localStorage.setItem('role',result.user.role);
+
         toast.success(`${Notifications.loginsuccess}`, {
             position: toast.POSITION.TOP_RIGHT      });
 
-            this.setState({ redirect: true });
+            // this.setState({ redirect: true });
                 
            
             
@@ -71,11 +57,9 @@ fetch(API_URL.url+'/login',{
 }
 
 
-render(){
-
-    if (this.state.redirect) {
-        return <Redirect to='/dashboard'/>;
-      }
+    // if (this.state.redirect) {
+    //     return <Redirect to='/dashboard'/>;
+    //   }
 
 return (
 
@@ -90,7 +74,7 @@ return (
 
                 <Row>
                     <Col lg={6} className="d-none d-lg-block bg-login-image"
-                        style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/' + this.state.bgimg})`}}>
+                        style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/' + bgimg})`}}>
                     </Col>
                     <Col lg={6}>
                     <div className="p-5">
@@ -98,18 +82,18 @@ return (
                             <h1 className="h4 text-gray-900 mb-4">Welcome Back!</h1>
                         </div>
 
-                        <Form className="user" onSubmit={this.handleSubmit}>
+                        <Form className="user" onSubmit={handleSubmit}>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
 
-                                <Form.Control className="form-control-user" name='email' value={this.state.email}
-                                    onChange={this.handleChange} type="email" placeholder="Enter email" />
+                                <Form.Control className="form-control-user" name='email' 
+                                    onChange={e=>setEmail(e.target.value)} type="email" placeholder="Enter email" />
 
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formBasicPassword">
 
-                                <Form.Control className="form-control-user" name="password" value={this.state.password}
-                                    onChange={this.handleChange} type="password" placeholder="Password" />
+                                <Form.Control className="form-control-user" name="password" 
+                                    onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" />
                             </Form.Group>
 
                             <Button variant="primary" type="submit" className="btn-user btn-block">
@@ -141,7 +125,6 @@ return (
 
 
 )
-}
 }
 
 export default Login;

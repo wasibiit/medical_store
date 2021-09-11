@@ -17,18 +17,15 @@ const EditStock =()=>{
     const params = useParams();
 
     const [id,setId] = useState('');
-    const [total_stock_purchased,setTotal_stock_purchased] = useState('');
-    const [total_investment,setTotal_investment] = useState('');
-    const [purchase_date,setPurchase_date] = useState('');
-    const [purchased_from,setPurchased_from] = useState('');
-    const [delivered_by,setDelivered_by] = useState('');
+    const [machine,setMachine] = useState('');
+    const [meter,setMeter] = useState('');
     const [stock_type_id,setStock_type_id] = useState(0);
     const [stock_type,setStock_type] = useState('');
-    const [stock_typelist,setStocktypelist] = useState([]);
+    const [stocktypelist,setStocktypelist] = useState([]);
 
     useEffect(() => {
         
-        fetch(API_URL.url+`/stock/${params.id}`, {
+        fetch(API_URL.url+`/fuel_dispenser/${params.id}`, {
             method: "GET",
             headers: {
                 "Origin": "*",               
@@ -44,14 +41,11 @@ const EditStock =()=>{
                    
                     console.log(result)
                    
-                    setId(result.stock.id);
-                    setTotal_stock_purchased(result.stock.total_stock_purchased);
-                    setTotal_investment(result.stock.total_investment);
-                    setPurchase_date(result.stock.purchase_date);
-                    setPurchased_from(result.stock.purchased_from);
-                    setDelivered_by(result.stock.delivered_by);
-                    setStock_type_id(result.stock.stock_type_id);
-                    setStock_type(result.stock.stock_type);
+                    setId(result.fuel_dispenser.id);
+                    setMachine(result.fuel_dispenser.machine);
+                    setMeter(result.fuel_dispenser.meter);
+                    setStock_type(result.fuel_dispenser.stock_type);
+                    setStock_type_id(result.fuel_dispenser.stock_type_id);
                     
                 },
                 (error) => {
@@ -96,7 +90,7 @@ const EditStock =()=>{
         const handleUpdate = async (e) => {
             e.preventDefault();
     
-            await fetch(API_URL.url+`/stock`, {
+            await fetch(API_URL.url+`/fuel_dispenser`, {
                 method: "PUT",
                 headers: {
                     "Origin": "*",               
@@ -107,11 +101,8 @@ const EditStock =()=>{
                 },
                 body: JSON.stringify({
                     "id": `${id}`,
-                    "total_stock_purchased": `${total_stock_purchased}`,
-                    "total_investment": `${total_investment}`,
-                    "purchase_date": purchase_date,
-                    "purchased_from": purchased_from,
-                    "delivered_by": delivered_by,
+                    "machine": machine,
+                    "meter": meter,
                     "stock_type_id": `${stock_type_id}`,
                     "stock_type": stock_type,
                 })
@@ -140,69 +131,41 @@ return (
     <Col lg={7} md={7} sm={12}>
         <div className="card shadow mb-4">
             <div className="card-header py-3">
-                <h6 className="m-0 font-weight-bold text-primary">Edit Stock</h6>
+                <h6 className="m-0 font-weight-bold text-primary">Edit Fuel Dispenser</h6>
             </div>
             <div className="card-body">
 
-                <Form className="user" onSubmit={handleUpdate}>
-                    <div className="row">
+            <Form className="user" onSubmit={handleUpdate}>
+                  
 
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPurchase">
-                            <Form.Control className="form-control-user" name='total_stock_purchased' value={total_stock_purchased} onChange={e=>
-                                setTotal_stock_purchased(e.target.value)} type="number" placeholder="Enter stock (ltr)" />
+                  <Form.Group  controlId="formBasicPurchase">
+                      <Form.Control className="form-control-user" name='machine' value={machine} onChange={e=>
+                          setMachine(e.target.value)} type="text" placeholder="Enter machine name" />
 
-                        </Form.Group>
+                  </Form.Group>
 
 
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicInvest">
-                            <Form.Control className="form-control-user" name='total_investment' value={total_investment} onChange={e=>
-                                setTotal_investment(e.target.value)} type="number" placeholder="Enter total investment (Rs)" />
+                  <Form.Group  controlId="formBasicInvest">
+                      <Form.Control className="form-control-user" name='meter' value={meter} onChange={e=>
+                          setMeter(e.target.value)} type="text" placeholder="Enter meter readings" />
 
-                        </Form.Group>
+                  </Form.Group>
 
-                    </div>
+                  <Form.Group>
+                  <select name="stocktype" id="gender" className="form-control-user form-control"
+                          onChange={onchangefun} value={stock_type_id}>
 
-                    <div className="row">
+                         <option defaultValue={stock_type_id}>Select Stock Type</option>
+                          {stocktypelist.map((stock,i)=>(<option key={i} value={stock.stock_type.id}>
+                              {stock.stock_type.type}</option>))}
 
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPDate">
+                      </select>
+                  </Form.Group>
 
-                        <Form.Control className="form-control-user" name='purchase_date' value={purchase_date} onChange={e=>
-                                setPurchase_date(e.target.value)} type="date" placeholder="Select purchase date" />
-
-                        </Form.Group>
-
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12"  controlId="formBasicPurfrom">
-                            <Form.Control className="form-control-user" value={purchased_from} name='purchased_from' onChange={e=>
-                                setPurchased_from(e.target.value)} type="text" placeholder="Enter purchase from" />
-
-                        </Form.Group>
-
-                    </div>
-
-                    <div className="row">
-
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicDby">
-                            <Form.Control className="form-control-user" name='delivered_by' value={delivered_by} onChange={e=>
-                                setDelivered_by(e.target.value)} type="text" placeholder="Enter Delivered by" />
-
-                        </Form.Group>
-
-                        <div className="form-group col-lg-6 col-md-6 col-sm-12 col-12">
-                            <select name="stocktype" id="gender" className="form-control-user form-control"
-                                onChange={onchangefun} value={stock_type_id}>
-
-                               <option defaultValue={stock_type_id}>Select Stock Type</option>
-                                {stock_typelist.map((stock,i)=>(<option key={i} value={stock.stock_type.id}>
-                                    {stock.stock_type.type}</option>))}
-
-                            </select>
-                        </div>
-                    </div>
-
-                    <Button variant="primary" type="submit" className="btn-user btn-block">
-                        Submit
-                    </Button>
-                </Form>
+              <Button variant="primary" type="submit" className="btn-user btn-block">
+                  Update
+              </Button>
+          </Form>
 
 
 

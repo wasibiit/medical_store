@@ -14,9 +14,15 @@ autoClose: 8000,
 draggable: false,
 });
 
-const FuelDispensersList= props =>{
-
-const [fuelDispensersList, setFuelDispensersList] = useState([])
+const Saleslist= props =>{
+const [stocks, setStocks] = useState([])
+const [id,setId] = useState('');
+const [total_stock_purchased,setTotal_stock_purchased] = useState();
+const [total_investment,setTotal_investment] = useState();
+const [purchase_date,setPurchase_date] = useState('');
+const [purchased_from,setPurchase_from] = useState('');
+const [delivered_by,setDelivered_by] = useState('');
+const [stock_type_id,setStock_type_id] = useState(0);
 
 
 useEffect(() => {
@@ -33,7 +39,7 @@ $('#dataTable').DataTable({
 });
 
 const fetchData = async() => {
-const res = await fetch(API_URL.url+'/fuel_dispensers', {
+const res = await fetch(API_URL.url+'/sale', {
 
 method: "GET",
 headers: {
@@ -46,10 +52,8 @@ headers: {
 .then(res => res.json())
 .then(
 (resp) => {
-
-setFuelDispensersList(resp.data);
-
-console.log(resp.data);
+// setStocks(resp.data);
+console.log(resp);
 
 },
 (error) => {
@@ -64,7 +68,7 @@ fetchData();
 
 function handleDelete(id) {
 
-fetch(API_URL.url+"/fuel_dispenser", {
+fetch(API_URL.url+"/stock", {
 method: "DELETE",
 headers: {
 "Origin": "*",
@@ -99,8 +103,8 @@ return(
     <ToastContainer />
     <div className="card shadow mb-4">
         <div className="card-header py-3">
-            <h4 className="m-0 font-weight-bold text-primary">Fuel Dispensers List</h4>
-            <Link to={process.env.PUBLIC_URL + "/add-dispenser" } className="btn btn-primary btn-icon-split">
+            <h4 className="m-0 font-weight-bold text-primary">Sales List</h4>
+            <Link to={process.env.PUBLIC_URL + "/add-stock" } className="btn btn-primary btn-icon-split">
             <span className="icon text-white-50">
                 <i className="fas fa-plus"></i>
             </span>
@@ -114,38 +118,43 @@ return(
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Machine </th>
-                            <th>Meter</th>
-                            <th>Stock type</th>
+                            <th>Stock Name</th>
+                            <th>Total Purchase</th>
+                            <th>Total Investment</th>
+                            <th>Purchase Date</th>
+                            <th>Purchase From</th>
+                            <th>Delivered by</th>
                             <th>Action</th>
                         </tr>
                     </thead>
 
-                    <tbody>{
+                    {/* <tbody>{
 
 
-fuelDispensersList.map((fdispenser,index)=>(
+                        stocks.map((stocks,index)=>(
 
                         <tr key={index}>
                             <td>{index+1}</td>
-                            <td>{fdispenser.fuel_dispenser.machine}</td>                           
-                            <td>{fdispenser.fuel_dispenser.meter}</td>                           
-                            <td>{fdispenser.fuel_dispenser.stock_type}</td>                           
-                         
+                            <td>{stocks.stock.stock_type}</td>                           
+                            <td>{stocks.stock.total_stock_purchased}</td>
+                            <td>{stocks.stock.total_investment}</td>
+                            <td>{stocks.stock.purchase_date}</td>
+                            <td>{stocks.stock.purchased_from}</td>
+                            <td>{stocks.stock.delivered_by}</td>
                             <td>
                                 <div className="actbtns">
 
 
 
-                                    <Link to={process.env.PUBLIC_URL + "/edit-dispenser/"+fdispenser.fuel_dispenser.id } type="button" 
+                                    <Link to={process.env.PUBLIC_URL + "/edit-stock/"+stocks.stock.id } type="button" 
                                         className="btn btn-info"><i className="fas fa-pencil-alt"></i>
 
                                     </Link>
                                     <Button className="btn btn-danger" onClick={()=>
-                                        handleDelete(fdispenser.fuel_dispenser.id)}><i className="fas fa-trash-alt"></i></Button>
+                                        handleDelete(stocks.stock.id)}><i className="fas fa-trash-alt"></i></Button>
                                 </div>
                             </td>
-                        </tr>))}</tbody>
+                        </tr>))}</tbody> */}
 
 
                 </table>
@@ -158,4 +167,4 @@ fuelDispensersList.map((fdispenser,index)=>(
 
 }
 
-export default FuelDispensersList;
+export default Saleslist;

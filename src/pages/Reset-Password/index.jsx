@@ -1,15 +1,24 @@
 import React,{useState}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 
 const ForgotPsd=()=>{
 
+    const params = useParams();
    
     const [bgimg,setBgimg]=useState('img/login-punch.png');
-    const [email,setEmail]=useState('');
+    const [newpassword,setNewpassword]=useState('');
+    const [confirmpassword,setConfirmpassword]=useState('');
+
+    
+    let prid = params.id;
+
+    const hello = prid.replace(':','');
+
+    console.log(hello);
 
 
     const handleSubmit= async(event)=>{
@@ -25,7 +34,8 @@ const ForgotPsd=()=>{
                 "Accept": "application/json",             
             },
             body: JSON.stringify({
-                "email": email,
+                "id":hello,
+                "password": newpassword
             })
         }).then((response)=>{
             response.json().then((result)=>{
@@ -41,6 +51,21 @@ const ForgotPsd=()=>{
                 toast.error(`${Notifications.notlogin}`, {
                     position: toast.POSITION.TOP_RIGHT      });
         })
+        }
+
+        const onchange=(e)=>{
+
+           
+
+            if (e.target.value !== newpassword) {
+                
+                console.log("please enter same password");
+
+              } else{
+                  console.log("password same");
+                setConfirmpassword(e.target.value);
+              }
+
         }
 
     
@@ -60,15 +85,19 @@ const ForgotPsd=()=>{
                             <Col lg={6}>
                                 <div className="p-5">
                                     <div className="text-center">
-                                        <h1 className="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
-                                        <p className="mb-4">We get it, stuff happens. Just enter your email address below
-                                            and we'll send you a link to reset your password!</p>
+                                        <h1 className="h4 text-gray-900 mb-4">Reset Your Password?</h1>
+                                       
                                     </div>
                                    
                                     <Form className="user" onSubmit={handleSubmit}>
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                            
-                                            <Form.Control className="form-control-user" type="email" placeholder="Enter email" onChange={(e)=>setEmail(e.target.value)} />
+                                            <Form.Control className="form-control-user" type="password" placeholder="Enter new password" onChange={(e)=>setNewpassword(e.target.value)} />
+                                          
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                           
+                                            <Form.Control className="form-control-user" type="password" placeholder="Enter confirm password" onChange={onchange} />
                                           
                                         </Form.Group>
 

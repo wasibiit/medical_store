@@ -17,6 +17,7 @@ const AddEmployee =()=>{
 const [salary,setSalary] = useState('');
 const [city,setCity] = useState('');
 const [contract_begin_date,setContract_begin_date] = useState('');
+const [contract_end_date,setContract_end_date] = useState('');
 const {state} = useLocation();
 
 
@@ -37,6 +38,7 @@ body: JSON.stringify({
 "city": city,
 "salary": salary,
 "contract_begin_date": contract_begin_date,
+"contract_end_date": contract_end_date,
 })
 })
 .then(res => res.json())
@@ -47,8 +49,6 @@ console.log(result);
 
 toast.success(`${Notifications.addedsuccess}`, {
 position: toast.POSITION.TOP_RIGHT });
-
-
 
 
 },
@@ -83,24 +83,41 @@ return (
                     <Form className="user" onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
 
-                            <Form.Control className="form-control-user" name='city' onChange={e=>setCity(e.target.value)}
+                            <Form.Control className="form-control-user" name='city' onChange={e=>
+                                setCity(e.target.value)}
                                 type="text" placeholder="Enter city name" />
 
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="formBasicEmail">
 
-                            <Form.Control className="form-control-user" name='salary' onChange={e=>setSalary(e.target.value)}
+                            <Form.Control className="form-control-user" name='salary' onChange={e=>
+                                setSalary(e.target.value)} 
                                 type="number" placeholder="Enter Salary" />
 
                         </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Row>
+                            <Col lg={6} md={6} sm={12}>
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
 
-                            <Form.Control className="form-control-user" name='id' onChange={e=>setContract_begin_date(e.target.value)}
-                                type="date" placeholder="Enter contract date" />
+                                <Form.Control className="form-control-user" name='contract_begin_date' onChange={e=>
+                                    setContract_begin_date(e.target.value)}
+                                    type="date" placeholder="Enter contract start date" />
 
-                        </Form.Group>
+                            </Form.Group>
+                            </Col>
+                            <Col lg={6} md={6} sm={12}>
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
+
+                                <Form.Control className="form-control-user" name='contract_end_date' onChange={e=>
+                                    setContract_end_date(e.target.value)}
+                                    type="date" placeholder="Enter contract end date" />
+
+                            </Form.Group>
+                            </Col>
+                        </Row>
+
 
                         <Button variant="primary" type="submit" className="btn-user btn-block">
                             Submit

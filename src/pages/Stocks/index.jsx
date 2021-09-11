@@ -29,11 +29,11 @@ useEffect(() => {
 
 
 $('#dataTable').DataTable({
-    "ordering": false,
-    searching: false,
+    "ordering": true,
+    searching: true,
     "bPaginate": true,
-     "bLengthChange": false,
-    "bFilter": false,
+     "bLengthChange": true,
+    "bFilter": true,
     "bInfo": false,
     "bAutoWidth": false
 });
