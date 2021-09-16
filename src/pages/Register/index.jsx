@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import Notifications from '../../utils/notifications';
+import { getToken } from '../../utils/common';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import { NavLink, Redirect } from 'react-router-dom';
+import { NavLink, Redirect,useHistory } from 'react-router-dom';
 import API_URL from '../../utils/api';
 
 
@@ -21,6 +22,20 @@ const Register =()=>{
     const [gender,setGender] = useState('');
     const [redirect,setRedirect] = useState(false);
 
+    const history = useHistory();
+
+    
+
+useEffect(() => {
+
+    if(getToken("token")){
+
+        history.push('/dashboard');
+    } else{
+        history.push('/register');
+    }
+
+}, [])
 
 
     const submit = async (e) => {

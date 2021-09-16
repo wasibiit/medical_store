@@ -19,7 +19,6 @@ draggable: false,
 const AddStock =()=>{
 
 const [total_stock_purchased,setTotal_stock_purchased] = useState();
-const [total_investment,setTotal_investment] = useState();
 const [purchase_date,setPurchase_date] = useState('');
 const [purchased_from,setPurchase_from] = useState('');
 const [delivered_by,setDelivered_by] = useState('');
@@ -80,7 +79,6 @@ headers: {
 },
 body: JSON.stringify({
 "total_stock_purchased": total_stock_purchased,
-"total_investment": total_investment,
 "purchase_date": purchase_date,
 "purchased_from": purchased_from,
 "delivered_by": delivered_by,
@@ -91,6 +89,9 @@ body: JSON.stringify({
 .then(res => res.json())
 .then(
 (result) => {
+
+    e.target.reset();
+    e.reset();
 
 toast.success(`${Notifications.addedsuccess}`, {
 position: toast.POSITION.TOP_RIGHT });
@@ -111,12 +112,7 @@ return (
 
 
         <Col lg={7} md={7} sm={12}>
-        <Link to={process.env.PUBLIC_URL + "/stock-type" } className="btn btn-secondary btn-icon-split mb-3">
-            <span className="icon text-white-50">
-                <i className="fas fa-arrow-left"></i>
-            </span>
-            <span className="text">Back</span>
-            </Link>
+     
         <div className="card shadow mb-4">
             <div className="card-header py-3">
                 <h6 className="m-0 font-weight-bold text-primary">Add Stock</h6>
@@ -129,17 +125,24 @@ return (
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPurchase">
                            
                         <Form.Label>Purchased Stock (ltr)</Form.Label>
-                            <InputNumber className="form-control-user" name='total_stock_purchased' onChange={e=>
-                                setTotal_stock_purchased(e)} type="number"  />
+                           
+
+                        <Form.Control className="form-control-user" name='total_stock_purchased' onChange={e=>
+                                setTotal_stock_purchased(e.target.value)} type="number"  />
                         </Form.Group>
 
 
-                        <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicInvest">
-                        <Form.Label>Investment (Rs)</Form.Label>
-                            <Form.Control className="form-control-user" name='total_investment' onChange={e=>
-                                setTotal_investment(e.target.value)} type="number"  />
+                        <div className="form-group col-lg-6 col-md-6 col-sm-12 col-12">
+                        <Form.Label>Stock Type</Form.Label>
+                            <select name="stocktype" id="gender" className="form-control-user form-control"
+                                onChange={onchangefun} value={stock_type_id}>
 
-                        </Form.Group>
+                               <option defaultValue={stock_type_id}>Select Stock Type</option>
+                                {stocktypelist.map((stock,i)=>(<option key={i} value={stock.id}>
+                                    {stock.type}</option>))}
+
+                            </select>
+                        </div>
 
                     </div>
 
@@ -170,17 +173,7 @@ return (
 
                         </Form.Group>
 
-                        <div className="form-group col-lg-6 col-md-6 col-sm-12 col-12">
-                        <Form.Label>Stock Type</Form.Label>
-                            <select name="stocktype" id="gender" className="form-control-user form-control"
-                                onChange={onchangefun} value={stock_type_id}>
-
-                               <option defaultValue={stock_type_id}>Select Stock Type</option>
-                                {stocktypelist.map((stock,i)=>(<option key={i} value={stock.id}>
-                                    {stock.type}</option>))}
-
-                            </select>
-                        </div>
+                        
                     </div>
 
                     <Button variant="primary" type="submit" className="btn-user btn-block">

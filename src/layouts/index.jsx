@@ -5,13 +5,17 @@ import Sidebar from './Sidebar/index';
 
 
 const Layout = ({ children }) => {
-    const [toggle, setToggle] = useState(false)
+    const [toggle, setToggle] = useState(false);
+   
 
 const ToggleFunction=()=>{
 
     setToggle(!toggle);
 
 }
+
+
+
     return(
     <Fragment>
         <div id="wrapper" >

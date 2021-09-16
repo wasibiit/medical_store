@@ -1,7 +1,8 @@
-import React,{useState}from 'react';
+import React,{useState,useEffect}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams,useHistory } from "react-router-dom";
+import { getToken } from '../../utils/common';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 
@@ -13,10 +14,22 @@ const ForgotPsd=()=>{
     const [newpassword,setNewpassword]=useState('');
     const [confirmpassword,setConfirmpassword]=useState('');
 
+    const history = useHistory();
     
     let prid = params.id;
-
     const id = prid.replace(':','');
+
+
+    useEffect(() => {
+    
+        if(getToken("token")){
+    
+            history.push('/dashboard');
+        } else{
+            history.push('/reset');
+        }
+    
+    }, [])
 
 
     const handleSubmit= async(event)=>{

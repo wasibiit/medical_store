@@ -1,7 +1,7 @@
-import React,{useState}from 'react';
+import React,{useState,useEffect}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import {setCookie} from "../../utils/common";
+import {setCookie,getToken} from "../../utils/common";
 import { NavLink } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
@@ -15,6 +15,7 @@ toast.configure({
 
 const Login =()=>{
 
+const [validated, setValidated] = useState(false);
 const [bgimg,setBgimg] = useState('img/loginimg.jpg');
 const [email,setEmail] = useState('');
 const [password,setPassword] = useState('');
@@ -22,46 +23,63 @@ const [password,setPassword] = useState('');
 const history = useHistory();
 
 
-const handleSubmit= async(event)=>{
+useEffect(() => {
 
-event.preventDefault();
+    if(getToken("token")){
 
-
-await fetch(API_URL.url+'/login',{
-    method:"POST",
-    headers: {
-        "Origin": "*",               
-        "Content-Type": "application/json",
-        "Accept": "application/json",             
-    },
-    body: JSON.stringify({
-        "email": email,
-        "password": password,
-    })
-}).then((response)=>{
-    response.json().then((result)=>{
-
-
-        if (result.token === null || result.token === undefined) {
-            
-            toast.error(`${Notifications.invalidcred}`, {
-                position: toast.POSITION.TOP_RIGHT      });
-
-                // history.push('/login');
-        } else {
-            
-           setCookie("token", result.token+":0z54x3"+result.role+"y9kv638")
         history.push('/dashboard');
-            window.location.href = "/dashboard";
-        }
-           
+    } else{
+        history.push('/login');
+    }
 
-    })
-}).catch((error)=>{
-   
-        toast.error(`${Notifications.notlogin}`, {
-            position: toast.POSITION.TOP_RIGHT      });
-})
+}, [])
+
+
+const handleSubmit= async(event)=>{
+    event.preventDefault();
+
+
+        await fetch(API_URL.url+'/login',{
+            method:"POST",
+            headers: {
+                "Origin": "*",               
+                "Content-Type": "application/json",
+                "Accept": "application/json",             
+            },
+            body: JSON.stringify({
+                "login": email,
+                "password": password,
+            })
+        }).then((response)=>{
+            response.json().then((result)=>{
+        
+        
+                if (result.token === null || result.token === undefined) {
+                    
+                    toast.error(`${Notifications.invalidcred}`, {
+                        position: toast.POSITION.TOP_RIGHT      });
+        
+                        // history.push('/login');
+                } else {
+                    
+                   setCookie("token", result.token+":0z54x3"+result.role+"y9kv638")
+                history.push('/dashboard');
+                    window.location.href = "/dashboard";
+                }
+                   
+        
+            })
+        }).catch((error)=>{
+           
+                toast.error(`${Notifications.notlogin}`, {
+                    position: toast.POSITION.TOP_RIGHT      });
+        })
+
+
+    
+
+
+
 }
 
 
@@ -87,15 +105,15 @@ return (
                             <h1 className="h4 text-gray-900 mb-4">Welcome Back!</h1>
                         </div>
 
-                        <Form className="user" onSubmit={handleSubmit}>
-                            <Form.Group className="mb-3" controlId="formBasicEmail">
-
-                                <Form.Control className="form-control-user" name='email' 
-                                    onChange={e=>setEmail(e.target.value)} type="email" placeholder="Enter email" required />
+                        <Form noValidate validated={validated} className="user" onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3" controlId="validationCustom01">
+                          
+                                <Form.Control className="form-control-user" name='text' 
+                                    onChange={e=>setEmail(e.target.value)} type="text" placeholder="Enter email" required />
 
                             </Form.Group>
 
-                            <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Group className="mb-3" controlId="validationCustom02">
 
                                 <Form.Control className="form-control-user" name="password" 
                                     onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" required />

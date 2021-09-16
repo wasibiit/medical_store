@@ -7,39 +7,35 @@ const Dashboard=()=>{
 
 
 
-    return(
-        
-            <Layout>
+return(
 
-           
-                    <div className="col-llg-6 col-md-6 col-sm-12 col-12">
-                    <Chart
-  width={'100%'}
-  height={'300px'}
-  chartType="PieChart"
-  loader={<div>Loading Chart</div>}
-  data={[
+<Layout>
+
+
+  <div className="col-llg-6 col-md-6 col-sm-12 col-12">
+
+    <Chart width={'100%'} height={'300px'} chartType="PieChart" loader={
+    <div>Loading Chart</div>}
+    data={[
     ['Task', 'Hours per Day'],
-    ['Work', 15],
-    ['Eat', 15],
-    ['Commute', 15],
-    ['Watch TV', 15],
-    ['Sleep', 15],
-  ]}
-  options={{
-    title: 'My Daily Activities',
-  }}
-  rootProps={{ 'data-testid': '1' }}
-/>
-                    </div>
-                    <div className="col-llg-6 col-md-6 col-sm-12 col-12"></div>
-               
+    ['Sale', 75],
+    ['Remaing', 15],
 
-            <h1 className="h3 mb-4 text-gray-800">Blank Page</h1>
+    ]}
+    options={{
+      title: 'My Daily Activities',
+    }}
+    rootProps={{ 'data-testid': '1' }}
+    />
+  </div>
 
-            </Layout>
-        
-    )
+
+
+  <h1 className="h3 mb-4 text-gray-800">Blank Page</h1>
+
+</Layout>
+
+)
 }
 
 export default Dashboard;

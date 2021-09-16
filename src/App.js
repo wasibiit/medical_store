@@ -4,11 +4,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './assets/vendor/fontawesome-free/css/all.min.css';
 import './assets/css/sb-admin-2.css';
+import { useLocation } from 'react-router-dom';
 import Adminroutes from './routes/Adminroutes';
 import Userroutes from './routes/Userroutes';
 import Emproutes from './routes/Emproutes';
 import { getRole } from './utils/common';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NavScrollTop from "./components/Navscrolltop/index";
 
 import Login from './pages/Login/index';
@@ -19,10 +20,13 @@ import Dashboard from './pages/Dashboard';
 import NotFound from './pages/Notfound';
 
 
-function App() {
+const App=({location})=>{
     window.$ = window.jQuery = jquery;
 
-    const getRoutesBy = (role) => {return role === "admin" ? <Adminroutes/> : role === "employee" ? <Emproutes/> : role === "customer" ? <Userroutes/>: <Userroutes/>;}
+    const getRoutesBy = (role) => {return role === "admin" ? <Adminroutes/> : role === "employee" ? <Emproutes/> : role === "customer" ? <Userroutes/>: <Redirect to="/login" />;}
+
+   
+    console.log("sajid"+location);
 
   return (
    
@@ -30,6 +34,7 @@ function App() {
       
    <Router>
    <NavScrollTop>
+
 
    {getRoutesBy(getRole("token"))}
    
@@ -44,7 +49,7 @@ function App() {
                 component={Login}
             /> */}
 
-<Route exact path={["/", "/login"]} component={Login} />
+            <Route exact path={["/", "/login"]} component={Login} />
             <Route   exact 
                 path={`${process.env.PUBLIC_URL + "/register"}`}
                 component={Register}
@@ -64,9 +69,9 @@ function App() {
                 component={Dashboard}
             />
 
-            <Route exact  path={`${process.env.PUBLIC_URL + "/404"}`} component={NotFound} />
            
-        
+
+          
         </Switch>
     </NavScrollTop>
 </Router>

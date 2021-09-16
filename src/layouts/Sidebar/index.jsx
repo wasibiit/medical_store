@@ -1,5 +1,5 @@
-import { Link, Redirect } from "react-router-dom";
-import { getRole, checkCookie } from "../../utils/common";
+import { Link } from "react-router-dom";
+import { getRole } from "../../utils/common";
 import Empmenu from "./Empmenu";
 import Adminmenu from "./Adminmenu";
 import Usermenu from "./Usermenu";
