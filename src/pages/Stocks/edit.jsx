@@ -4,7 +4,7 @@ import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 
 toast.configure({
@@ -44,14 +44,14 @@ const EditStock =()=>{
                    
                     console.log(result)
                    
-                    setId(result.stock.id);
-                    setTotal_stock_purchased(result.stock.total_stock_purchased);
-                    setTotal_investment(result.stock.total_investment);
-                    setPurchase_date(result.stock.purchase_date);
-                    setPurchased_from(result.stock.purchased_from);
-                    setDelivered_by(result.stock.delivered_by);
-                    setStock_type_id(result.stock.stock_type_id);
-                    setStock_type(result.stock.stock_type);
+                    setId(result.id);
+                    setTotal_stock_purchased(result.total_stock_purchased);
+                    setTotal_investment(result.total_investment);
+                    setPurchase_date(result.purchase_date);
+                    setPurchased_from(result.purchased_from);
+                    setDelivered_by(result.delivered_by);
+                    setStock_type_id(result.stock_type_id);
+                    setStock_type(result.stock_type);
                     
                 },
                 (error) => {
@@ -138,6 +138,12 @@ return (
     <ToastContainer />
     <Row>
     <Col lg={7} md={7} sm={12}>
+    <Link to={process.env.PUBLIC_URL + "/stock" } className="btn btn-secondary btn-icon-split mb-3">
+        <span className="icon text-white-50">
+            <i className="fas fa-arrow-left"></i>
+        </span>
+        <span className="text">Back</span>
+        </Link>
         <div className="card shadow mb-4">
             <div className="card-header py-3">
                 <h6 className="m-0 font-weight-bold text-primary">Edit Stock</h6>
@@ -148,15 +154,17 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPurchase">
+                        <Form.Label>Purchased Stock (ltr)</Form.Label>
                             <Form.Control className="form-control-user" name='total_stock_purchased' value={total_stock_purchased} onChange={e=>
-                                setTotal_stock_purchased(e.target.value)} type="number" placeholder="Enter stock (ltr)" />
+                                setTotal_stock_purchased(e.target.value)} type="number"  />
 
                         </Form.Group>
 
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicInvest">
+                        <Form.Label>Investment (Rs)</Form.Label>
                             <Form.Control className="form-control-user" name='total_investment' value={total_investment} onChange={e=>
-                                setTotal_investment(e.target.value)} type="number" placeholder="Enter total investment (Rs)" />
+                                setTotal_investment(e.target.value)} type="number"  />
 
                         </Form.Group>
 
@@ -165,15 +173,16 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPDate">
-
+                        <Form.Label>Purchased Date</Form.Label>
                         <Form.Control className="form-control-user" name='purchase_date' value={purchase_date} onChange={e=>
-                                setPurchase_date(e.target.value)} type="date" placeholder="Select purchase date" />
+                                setPurchase_date(e.target.value)} type="date" />
 
                         </Form.Group>
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12"  controlId="formBasicPurfrom">
+                        <Form.Label>Purchase From</Form.Label>
                             <Form.Control className="form-control-user" value={purchased_from} name='purchased_from' onChange={e=>
-                                setPurchased_from(e.target.value)} type="text" placeholder="Enter purchase from" />
+                                setPurchased_from(e.target.value)} type="text"  />
 
                         </Form.Group>
 
@@ -182,18 +191,20 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicDby">
+                        <Form.Label>Delivered By</Form.Label>
                             <Form.Control className="form-control-user" name='delivered_by' value={delivered_by} onChange={e=>
-                                setDelivered_by(e.target.value)} type="text" placeholder="Enter Delivered by" />
+                                setDelivered_by(e.target.value)} type="text"  />
 
                         </Form.Group>
 
                         <div className="form-group col-lg-6 col-md-6 col-sm-12 col-12">
-                            <select name="stocktype" id="gender" className="form-control-user form-control"
+                        <Form.Label>Stock Type</Form.Label>
+                            <select name="stocktype" id="stocktype" className="form-control-user form-control"
                                 onChange={onchangefun} value={stock_type_id}>
 
                                <option defaultValue={stock_type_id}>Select Stock Type</option>
-                                {stock_typelist.map((stock,i)=>(<option key={i} value={stock.stock_type.id}>
-                                    {stock.stock_type.type}</option>))}
+                                {stock_typelist.map((stock,i)=>(<option key={i} value={stock.id}>
+                                    {stock.type}</option>))}
 
                             </select>
                         </div>

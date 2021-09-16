@@ -5,9 +5,11 @@ import Notifications from '../../utils/notifications';
 import API_URL from '../../utils/api';
 import Layout from '../../layouts/index';
 import {Link} from 'react-router-dom';
-import "datatables.net-dt/js/dataTables.dataTables";
-import "datatables.net-dt/css/jquery.dataTables.min.css";
 import $ from 'jquery';
+import { Table, Column, HeaderCell, Cell} from 'rsuite-table';
+import TablePagination from 'rsuite/lib/Table/TablePagination';
+import 'rsuite/dist/styles/rsuite-default.css';
+import { Icon, InputNumber } from 'rsuite';
 
 toast.configure({
 autoClose: 8000,
@@ -16,28 +18,19 @@ draggable: false,
 
 const StockTypeList= props =>{
 
-const [state, setState] = useState({
-    id: "",
-    type: ""
-})
+
 const [acstatus,setAcstatus] = useState(false);
 const [stocktype, setStocktype] = useState([])
+const [displayLength, setDisplayLength] = useState(10)
+const [loading, setloading] = useState(false)
+const [page, setPage] = useState(1)
+
+const [id, setId] = useState('');
+const [price, setPrice] = useState('');
+const [stock_type, setStock_type] = useState('');
 
 
 useEffect(() => {
-
-$('#dataTable').DataTable({
-    "ordering": false,
-    searching: false,
-    "bPaginate": true,
-     "bLengthChange": false,
-    "bFilter": false,
-    "bInfo": false,
-    "bAutoWidth": false
-});
-
-
-
 
 const fetchData = async () => {
     const res = await fetch(API_URL.url+'/stock-types', {
@@ -78,15 +71,16 @@ headers: {
 
 },
 body: JSON.stringify({
-"id": `${state.id}`,
-"type": state.type
+"id": `${id}`,
+"type": stock_type,
+"price": price
 })
 })
 .then(res => res.json())
 .then(
 (result) => {
 
-    toast.success(`${Notifications.stockupdatesuccess}`, {
+    toast.success(`${Notifications.updatedsuccess}`, {
         position: toast.POSITION.TOP_RIGHT });
 
         setTimeout(() => {
@@ -97,11 +91,38 @@ window.location.reload();
 
 },
 (error) => {
-    toast.error(`${Notifications.stockaddfailed}`, {
+    toast.error(`${Notifications.notupdatedsuccess}`, {
         position: toast.POSITION.TOP_RIGHT });
 })
 
 }
+
+
+const getstockdata=(id)=>{
+    
+    fetch(API_URL.url+`/stock-type/${id}`, {
+    method: "GET",
+    headers: {
+    "Origin": "*",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": `Bearer ${Notifications.token}`
+    
+    }
+    })
+    .then(res => res.json())
+    .then(
+    (result) => {
+        
+        setId(result.id);
+        setPrice(result.price);
+        setStock_type(result.type);
+    },
+    (error) => {
+    
+    })
+    
+    }
 
 function handleDelete(id) {
     
@@ -134,6 +155,23 @@ position: toast.POSITION.TOP_RIGHT });
 }
 
 
+const handleChangePage=(dataKey)=>{
+    setPage(dataKey);
+    }
+    const handleChangeLength=(dataKey)=>{
+    setPage(1);
+    setDisplayLength(dataKey);
+    }
+    const getData=()=>{
+    
+    return stocktype.filter((v, i) => {
+    const start = displayLength * (page - 1);
+    const end = start + displayLength;
+    return i >= start && i < end; }); } 
+    
+    const data=getData(); 
+
+
 return(
 
 <Layout>
@@ -145,45 +183,55 @@ return(
             <span className="icon text-white-50">
                 <i className="fas fa-plus"></i>
             </span>
-            <span className="text">Add Stock Type</span>
+            <span className="text">Add</span>
             </Link>
         </div>
         <div className="card-body">
-            <div className="table-responsive">
-                <table className="table table-striped table-bordered stocktable" id="dataTable" width="100%"
-                    cellSpacing="0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                  
-                    <tbody>{
 
+        <Table   data={data} loading={loading} height={350} >
+                <Column minWidth={70}>
+                    <HeaderCell>ID</HeaderCell>
 
-                        stocktype.map((stock,index)=>(
+                   <Cell>
+        {(rowData, rowIndex) => {
+          return <span>{rowIndex+1}</span>;
+        }}
+      </Cell>
+                </Column>
 
-                        <tr key={index}>
-                            <td>{index+1}</td>
-                            <td>{stock.stock_type.type}</td>
-                            <td>
-                                <div className="actbtns">
+                <Column minWidth={200} flexGrow={2}>
+                    <HeaderCell>Name</HeaderCell>
+                    <Cell dataKey="type" />
+                </Column>
+                <Column minWidth={200} flexGrow={2}>
+                    <HeaderCell>Price</HeaderCell>
+                    <Cell dataKey="price" />
+                </Column>
+              
+                <Column minWidth={120} fixed="right" flexGrow={1}>
+                    <HeaderCell>Action</HeaderCell>
 
+                    <Cell>
+                        {rowData => {
 
-                                    <a href="#updatemodal" data-toggle="modal" onClick={()=> setState({id: stock.stock_type.id, type: stock.stock_type.type})}
-                                        className="btn btn-info"><i className="fas fa-pencil-alt"></i>
+                        return (
+                        <span>
+                            <a href="#updatemodal" data-toggle="modal" onClick={()=> getstockdata(rowData.id)}> <Icon icon="edit2" />
+                            </a> | {' '}
+                            <a onClick={()=>handleDelete(rowData.id)}>
+                                <Icon icon="trash" /> </a>
+                        </span>
+                        );
+                        }}
+                    </Cell>
+                </Column>
 
-                                    </a><Button className="btn btn-danger" onClick={() => handleDelete(stock.stock_type.id)}><i className="fas fa-trash-alt"></i></Button>
-                                </div>
-                            </td>
-                        </tr>))}</tbody>
-                
+            </Table>
+            <TablePagination lengthMenu={[ { value: 8, label: 8 }, { value: 20, label: 20 } ]} activePage={page}
+                displayLength={displayLength} total={stocktype.length} onChangePage={handleChangePage}
+                onChangeLength={handleChangeLength} />
 
-                </table>
-            </div>
-        </div>
+                   </div>
     </div>
 
     <div className="modal fade" id="updatemodal">
@@ -200,11 +248,16 @@ return(
                                 <div className="p-5">
                                     <Form className="user" onSubmit={handleUpdate} method="PUT">
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
+                                        <Form.Label>Stock Type</Form.Label>
+                                            <Form.Control className="form-control-user" name='value' value={stock_type}
+                                                onChange={e=>setStock_type(e.target.value)} type="text"  />
 
-                                            <Form.Control className="form-control-user" name='value' value={state.type}
-                                                onChange={e=>setState({id:state.id,type:e.target.value})} type="text" placeholder="Enter stock
-                                                name" />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                        <Form.Label>Price</Form.Label>                                           
 
+                                            <InputNumber className="form-control-user" name='price' value={price}
+                                                onChange={e=>setPrice(e)}/>
                                         </Form.Group>
 
                                         <Button variant="primary" type="submit"  className="btn-user btn-block">

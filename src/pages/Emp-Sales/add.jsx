@@ -15,7 +15,7 @@ draggable: false,
 });
 
 
-const AddSale =()=>{
+const AddEmpSale =()=>{
 
 const [fuel_dispenser_id,setFuel_dispenser_id] = useState('');
 const [fuel_dispenser_list,setFuel_dispenser_list] = useState([]);
@@ -50,42 +50,16 @@ useEffect(() => {
         (resp) => {
         
             setFuel_dispenser_list(resp.data);
-        
+
+            console.log(resp.data);
+
         
         },
         (error) => {
         }
         )
         
-        }
-
-        // Users Data fetch
-
-
-        fetch(API_URL.url+'/employees', {
-        
-            method: "GET",
-            headers: {
-            "Origin": "*",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": `Bearer ${Notifications.token}`
-            }
-            })
-            .then(res => res.json())
-            .then(
-            (resp) => {
-        
-    
-            setEmployee_list(resp.data);
-            console.log(resp.data);
-            
-            },
-            (error) => {
-            }
-            )
-
-       
+        }     
         
         fetchDispenserData();
 
@@ -207,17 +181,13 @@ return (
 
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicInvest">
-                        <Form.Label>Select Employee</Form.Label>
-                        <select name="employees" id="employees" className="form-control-user form-control"
-                                onChange={onchangefun}>
+                        <Form.Label>Selected Employee</Form.Label>
+                       
+                        <span className="form-control-user" name='start_meter' >
+                                {/* {fuel_dispenser_name} */}
+                            </span>
 
-                               <option defaultValue={fuel_dis_id}>Select Employee</option>
-                                {employee_list.map((employee,i)=>(<option key={i} value={employee.employee.id}>
-                                    {employee.name}</option>))}
-
-                            </select>
-
-
+                        
                         </Form.Group>
 
                     </div>
@@ -290,4 +260,4 @@ return (
 )
 }
 
-export default AddSale;
+export default AddEmpSale;

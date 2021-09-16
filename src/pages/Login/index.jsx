@@ -1,9 +1,11 @@
 import React,{useState}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
+import {setCookie} from "../../utils/common";
 import { NavLink } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
+import { useHistory } from 'react-router-dom';
 
 
 toast.configure({
@@ -16,6 +18,8 @@ const Login =()=>{
 const [bgimg,setBgimg] = useState('img/loginimg.jpg');
 const [email,setEmail] = useState('');
 const [password,setPassword] = useState('');
+
+const history = useHistory();
 
 
 const handleSubmit= async(event)=>{
@@ -36,17 +40,21 @@ await fetch(API_URL.url+'/login',{
     })
 }).then((response)=>{
     response.json().then((result)=>{
-       
-        localStorage.setItem('token',result.user.token);
-        localStorage.setItem('role',result.user.role);
 
-        toast.success(`${Notifications.loginsuccess}`, {
-            position: toast.POSITION.TOP_RIGHT      });
 
-            // this.setState({ redirect: true });
-                
-           
+        if (result.token === null || result.token === undefined) {
             
+            toast.error(`${Notifications.invalidcred}`, {
+                position: toast.POSITION.TOP_RIGHT      });
+
+                // history.push('/login');
+        } else {
+            
+           setCookie("token", result.token+":0z54x3"+result.role+"y9kv638")
+        history.push('/dashboard');
+            window.location.href = "/dashboard";
+        }
+           
 
     })
 }).catch((error)=>{
@@ -57,9 +65,6 @@ await fetch(API_URL.url+'/login',{
 }
 
 
-    // if (this.state.redirect) {
-    //     return <Redirect to='/dashboard'/>;
-    //   }
 
 return (
 
@@ -86,14 +91,14 @@ return (
                             <Form.Group className="mb-3" controlId="formBasicEmail">
 
                                 <Form.Control className="form-control-user" name='email' 
-                                    onChange={e=>setEmail(e.target.value)} type="email" placeholder="Enter email" />
+                                    onChange={e=>setEmail(e.target.value)} type="email" placeholder="Enter email" required />
 
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formBasicPassword">
 
                                 <Form.Control className="form-control-user" name="password" 
-                                    onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" />
+                                    onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" required />
                             </Form.Group>
 
                             <Button variant="primary" type="submit" className="btn-user btn-block">

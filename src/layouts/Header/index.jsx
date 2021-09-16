@@ -184,13 +184,13 @@ return(
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="dropdown-menu dropdown-menu-right shadow" aria-labelledby="userDropdown">
-                    <Dropdown.Item href="#/action-1"> <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    {/* <Dropdown.Item href="#/action-1"> <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         Profile</Dropdown.Item>
                     <Dropdown.Item href="#/action-2"> <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                         Settings</Dropdown.Item>
                     <Dropdown.Item href="#/action-3"> <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                         Activity Log</Dropdown.Item>
-                    <Dropdown.Divider />
+                    <Dropdown.Divider /> */}
                     <Dropdown.Item href="#/item" onClick={logout}>
                         <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         Logout

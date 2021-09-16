@@ -5,9 +5,10 @@ import Notifications from '../../utils/notifications';
 import API_URL from '../../utils/api';
 import Layout from '../../layouts/index';
 import {Link} from 'react-router-dom';
-import "datatables.net-dt/js/dataTables.dataTables";
-import "datatables.net-dt/css/jquery.dataTables.min.css";
-import $ from 'jquery';
+import { Table, Column, HeaderCell, Cell} from 'rsuite-table';
+import TablePagination from 'rsuite/lib/Table/TablePagination';
+import 'rsuite/dist/styles/rsuite-default.css';
+import { Icon } from 'rsuite';
 
 toast.configure({
 autoClose: 8000,
@@ -15,31 +16,17 @@ draggable: false,
 });
 
 const Saleslist= props =>{
-const [stocks, setStocks] = useState([])
-const [id,setId] = useState('');
-const [total_stock_purchased,setTotal_stock_purchased] = useState();
-const [total_investment,setTotal_investment] = useState();
-const [purchase_date,setPurchase_date] = useState('');
-const [purchased_from,setPurchase_from] = useState('');
-const [delivered_by,setDelivered_by] = useState('');
-const [stock_type_id,setStock_type_id] = useState(0);
+const [saleslist, setSaleslist] = useState([]);
+const [displayLength, setDisplayLength] = useState(10);
+const [loading, setloading] = useState(false);
+const [page, setPage] = useState(1);
 
 
 useEffect(() => {
 
 
-$('#dataTable').DataTable({
-    "ordering": false,
-    searching: false,
-    "bPaginate": true,
-     "bLengthChange": false,
-    "bFilter": false,
-    "bInfo": false,
-    "bAutoWidth": false
-});
-
 const fetchData = async() => {
-const res = await fetch(API_URL.url+'/sale', {
+const res = await fetch(API_URL.url+'/sales', {
 
 method: "GET",
 headers: {
@@ -52,8 +39,8 @@ headers: {
 .then(res => res.json())
 .then(
 (resp) => {
-// setStocks(resp.data);
-console.log(resp);
+setSaleslist(resp.data);
+console.log(resp.data);
 
 },
 (error) => {
@@ -68,7 +55,7 @@ fetchData();
 
 function handleDelete(id) {
 
-fetch(API_URL.url+"/stock", {
+fetch(API_URL.url+"/sale", {
 method: "DELETE",
 headers: {
 "Origin": "*",
@@ -96,6 +83,22 @@ position: toast.POSITION.TOP_RIGHT });
 
 }
 
+const handleChangePage=(dataKey)=>{
+    setPage(dataKey);
+    }
+    const handleChangeLength=(dataKey)=>{
+    setPage(1);
+    setDisplayLength(dataKey);
+    }
+    const getData=()=>{
+    
+    return saleslist.filter((v, i) => {
+    const start = displayLength * (page - 1);
+    const end = start + displayLength;
+    return i >= start && i < end; }); } 
+    
+    const data=getData(); 
+
 
 return(
 
@@ -104,7 +107,7 @@ return(
     <div className="card shadow mb-4">
         <div className="card-header py-3">
             <h4 className="m-0 font-weight-bold text-primary">Sales List</h4>
-            <Link to={process.env.PUBLIC_URL + "/add-stock" } className="btn btn-primary btn-icon-split">
+            <Link to={process.env.PUBLIC_URL + "/add-sale" } className="btn btn-primary btn-icon-split">
             <span className="icon text-white-50">
                 <i className="fas fa-plus"></i>
             </span>
@@ -112,53 +115,64 @@ return(
             </Link>
         </div>
         <div className="card-body">
-            <div className="table-responsive">
-                <table className="table table-striped table-bordered stocktable" id="dataTable" width="100%"
-                    cellSpacing="0">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Stock Name</th>
-                            <th>Total Purchase</th>
-                            <th>Total Investment</th>
-                            <th>Purchase Date</th>
-                            <th>Purchase From</th>
-                            <th>Delivered by</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+        <Table   data={data} loading={loading} height={350} >
+                <Column minWidth={70}>
+                    <HeaderCell>ID</HeaderCell>
 
-                    {/* <tbody>{
+                   <Cell>
+        {(rowData, rowIndex) => {
+          return <span>{rowIndex+1}</span>;
+        }}
+      </Cell>
+                </Column>
 
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>Employee</HeaderCell>
+                    <Cell dataKey="employee_name" />
+                </Column> 
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>Fuel Dispenser</HeaderCell>
+                    <Cell dataKey="fuel_dispenser_name" />
+                </Column>
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>Start Meter</HeaderCell>
+                    <Cell dataKey="start_meter" />
+                </Column>  
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>End Meter</HeaderCell>
+                    <Cell dataKey="end_meter" />
+                </Column> 
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>Started At</HeaderCell>
+                    <Cell dataKey="started_at" />
+                </Column>
+                <Column minWidth={200} flexGrow={3}>
+                    <HeaderCell>Ended At</HeaderCell>
+                    <Cell dataKey="ended_at" />
+                </Column>
+              
+                <Column minWidth={120} fixed="right" flexGrow={1}>
+                    <HeaderCell>Action</HeaderCell>
 
-                        stocks.map((stocks,index)=>(
+                    <Cell>
+                        {rowData => {
 
-                        <tr key={index}>
-                            <td>{index+1}</td>
-                            <td>{stocks.stock.stock_type}</td>                           
-                            <td>{stocks.stock.total_stock_purchased}</td>
-                            <td>{stocks.stock.total_investment}</td>
-                            <td>{stocks.stock.purchase_date}</td>
-                            <td>{stocks.stock.purchased_from}</td>
-                            <td>{stocks.stock.delivered_by}</td>
-                            <td>
-                                <div className="actbtns">
+                        return (
+                        <span>
+                            <Link to={"/edit-sale/"+rowData.id}> <Icon icon="edit2" />
+                            </Link> | {' '}
+                            <a onClick={()=>handleDelete(rowData.id)}>
+                                <Icon icon="trash" /> </a>
+                        </span>
+                        );
+                        }}
+                    </Cell>
+                </Column>
 
-
-
-                                    <Link to={process.env.PUBLIC_URL + "/edit-stock/"+stocks.stock.id } type="button" 
-                                        className="btn btn-info"><i className="fas fa-pencil-alt"></i>
-
-                                    </Link>
-                                    <Button className="btn btn-danger" onClick={()=>
-                                        handleDelete(stocks.stock.id)}><i className="fas fa-trash-alt"></i></Button>
-                                </div>
-                            </td>
-                        </tr>))}</tbody> */}
-
-
-                </table>
-            </div>
+            </Table>
+            <TablePagination lengthMenu={[ { value: 8, label: 8 }, { value: 20, label: 20 } ]} activePage={page}
+                displayLength={displayLength} total={saleslist.length} onChangePage={handleChangePage}
+                onChangeLength={handleChangeLength} />
         </div>
     </div>
 </Layout>

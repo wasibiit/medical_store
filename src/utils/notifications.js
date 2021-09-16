@@ -1,3 +1,4 @@
+import {getRole,getToken} from "./common";
 const Notifications = {
     notlogin: "Not login, please check",
     loginsuccess: "Login successfully",
@@ -10,6 +11,10 @@ const Notifications = {
     notaligible: "You are Customer",
     deletedsuccess: "Deleted successfully",
     notdeletedsuccess: "Not deleted successfully",
-    token:localStorage.getItem('token')
+    invalidcred: "Invalid Credentials",
+    resetpass: "Reset password successfully",
+    notpasswordsame: "Not password same",
+    token:getToken("token"),
+    role:getRole("token")
   }
   export default Notifications;

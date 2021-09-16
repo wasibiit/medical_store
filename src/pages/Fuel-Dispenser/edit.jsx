@@ -4,7 +4,7 @@ import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 
 toast.configure({
@@ -25,7 +25,7 @@ const EditStock =()=>{
 
     useEffect(() => {
         
-        fetch(API_URL.url+`/fuel_dispenser/${params.id}`, {
+        fetch(API_URL.url+`/fuel-dispenser/${params.id}`, {
             method: "GET",
             headers: {
                 "Origin": "*",               
@@ -41,11 +41,11 @@ const EditStock =()=>{
                    
                     console.log(result)
                    
-                    setId(result.fuel_dispenser.id);
-                    setMachine(result.fuel_dispenser.machine);
-                    setMeter(result.fuel_dispenser.meter);
-                    setStock_type(result.fuel_dispenser.stock_type);
-                    setStock_type_id(result.fuel_dispenser.stock_type_id);
+                    setId(result.id);
+                    setMachine(result.machine);
+                    setMeter(result.meter);
+                    setStock_type(result.stock_type);
+                    setStock_type_id(result.stock_type_id);
                     
                 },
                 (error) => {
@@ -90,7 +90,7 @@ const EditStock =()=>{
         const handleUpdate = async (e) => {
             e.preventDefault();
     
-            await fetch(API_URL.url+`/fuel_dispenser`, {
+            await fetch(API_URL.url+`/fuel-dispenser`, {
                 method: "PUT",
                 headers: {
                     "Origin": "*",               
@@ -129,6 +129,12 @@ return (
     <ToastContainer />
     <Row>
     <Col lg={7} md={7} sm={12}>
+    <Link to={process.env.PUBLIC_URL + "/fuel_dispensers" } className="btn btn-secondary btn-icon-split mb-3">
+            <span className="icon text-white-50">
+                <i className="fas fa-arrow-left"></i>
+            </span>
+            <span className="text">Back</span>
+            </Link>
         <div className="card shadow mb-4">
             <div className="card-header py-3">
                 <h6 className="m-0 font-weight-bold text-primary">Edit Fuel Dispenser</h6>
@@ -156,8 +162,8 @@ return (
                           onChange={onchangefun} value={stock_type_id}>
 
                          <option defaultValue={stock_type_id}>Select Stock Type</option>
-                          {stocktypelist.map((stock,i)=>(<option key={i} value={stock.stock_type.id}>
-                              {stock.stock_type.type}</option>))}
+                          {stocktypelist.map((stock,i)=>(<option key={i} value={stock.id}>
+                              {stock.type}</option>))}
 
                       </select>
                   </Form.Group>

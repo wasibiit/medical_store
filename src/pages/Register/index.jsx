@@ -85,24 +85,24 @@ const Register =()=>{
                                     <Form className="user" onSubmit={submit} method="POST">
                                     <Form.Group className="mb-3" controlId="formBasicName">
                                            
-                                           <Form.Control className="form-control-user" type="text" placeholder="Enter Name" onChange={e=>setName(e.target.value)} />
+                                           <Form.Control className="form-control-user" type="text" placeholder="Enter Name" onChange={e=>setName(e.target.value)} required />
                                          
                                        </Form.Group>
 
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                            
-                                           <Form.Control className="form-control-user" type="email" placeholder="Enter email" onChange={e=>setEmail(e.target.value)} />
+                                           <Form.Control className="form-control-user" type="email" placeholder="Enter email" onChange={e=>setEmail(e.target.value)} required/>
                                          
                                        </Form.Group>
 
                                        <Form.Group className="mb-3" controlId="formBasicPassword">
                                            
-                                           <Form.Control className="form-control-user" type="password" placeholder="Password" onChange={e=>setPassword(e.target.value)} />
+                                           <Form.Control className="form-control-user" type="password" placeholder="Password" onChange={e=>setPassword(e.target.value)}required />
                                        </Form.Group>
                                       
 
                                        <div className="form-group">
-                                           <select name="gender" id="gender" className="form-control-user form-control" onChange={e=>setGender(e.target.value)}>
+                                           <select name="gender" id="gender" className="form-control-user form-control" onChange={e=>setGender(e.target.value)} required>
                                            <option>Gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>

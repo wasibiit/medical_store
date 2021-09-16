@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { getRole, checkCookie } from "../../utils/common";
+import Empmenu from "./Empmenu";
+import Adminmenu from "./Adminmenu";
+import Usermenu from "./Usermenu";
+
 
 const Sidebar =(props)=>{
 
+    const getRoutesBy = (role) => {return role === "admin" ? <Adminmenu/> : role === "employee" ? <Empmenu/> : role === "customer" ? <Usermenu/> : <Usermenu/>;}
 
     return(
 
@@ -25,56 +31,14 @@ const Sidebar =(props)=>{
                     <span>Dashboard</span></Link>
             </li>
 
-            <li className="nav-item">
-                <Link className="nav-link" to={process.env.PUBLIC_URL + "/users" }>
-                    <i className="fas fa-fw fa-users"></i>
-                    <span>Users</span></Link>
-                    
-            </li>
-
-            <li className="nav-item">
-                <Link className="nav-link" to={process.env.PUBLIC_URL + "/stock-type" }>
-                    <i className="fas fa-fw fa-layer-group"></i>
-                    <span>Stock Type</span></Link>
-            </li>
-
-            <li className="nav-item">
-                <Link className="nav-link" to={process.env.PUBLIC_URL + "/stock" }>
-                    <i className="fas fa-fw fa-layer-group"></i>
-                    <span>Stocks</span></Link>
-            </li>
-
-            <li className="nav-item">
-                <Link className="nav-link" to={process.env.PUBLIC_URL + "/fuel_dispensers" }>
-                    <i className="fas fa-fw fa-layer-group"></i>
-                    <span>Fuel Dispensers</span></Link>
-            </li>
-
-       
 
            
-            {/* <li className="nav-item">
-                <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
-                    <i className="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" className="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div className="bg-white py-2 collapse-inner rounded">
-                        <h6 className="collapse-header">Login Screens:</h6>
-                        <a className="collapse-item" href="login.html">Login</a>
-                        <a className="collapse-item" href="register.html">Register</a>
-                        <a className="collapse-item" href="forgot-password.html">Forgot Password</a>
-                        <div className="collapse-divider"></div>
-                        <h6 className="collapse-header">Other Pages:</h6>
-                        <a className="collapse-item" href="404.html">404 Page</a>
-                        <a className="collapse-item" href="blank.html">Blank Page</a>
-                    </div>
-                </div>
-            </li> */}           
-       
+            {getRoutesBy(getRole("token"))}
+           
 
         </ul>
+
+
     )
 
 }

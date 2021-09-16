@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Row,Col,Form,Button} from 'react-bootstrap';
-import {Link,useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
@@ -12,18 +12,20 @@ autoClose: 8000,
 draggable: false,
 });
 
-const EditEmployee =()=>{
+const EditEmployee =(props)=>{
 
-const params = useParams();
+const {params} = useParams();
 const [id,setId] = useState('');
 const [salary,setSalary] = useState('');
 const [city,setCity] = useState('');
 const [contract_begin_date,setContract_begin_date] = useState('');
 const [contract_end_date,setContract_end_date] = useState('');
 
+console.log(props.match.params.id);
+
 useEffect(() => {
         
-    fetch(API_URL.url+`/employee/${params.id}`, {
+    fetch(API_URL.url+`/employee/${props.match.params.id}`, {
         method: "GET",
         headers: {
             "Origin": "*",               
@@ -39,11 +41,11 @@ useEffect(() => {
                
                 console.log(result)
                
-                setId(result.user.id);
-                setSalary(result.user.salary);
-                setCity(result.user.city);
-                setContract_begin_date(result.user.contract_begin_date);
-                setContract_end_date(result.user.contract_end_date);                
+                setId(result.id);
+                setSalary(result.salary);
+                setCity(result.city);
+                setContract_begin_date(result.contract_begin_date);
+                setContract_end_date(result.contract_end_date);                
             },
             (error) => {
                 // toast.error(`${Notifications.stockaddfailed}`, {
@@ -101,7 +103,7 @@ return (
 
 
         <Col lg={6} md={6} sm={12}>
-        <Link to={process.env.PUBLIC_URL + "/users" } className="btn btn-secondary btn-icon-split mb-3">
+        <Link to={process.env.PUBLIC_URL + "/users"} className="btn btn-secondary btn-icon-split mb-3">
         <span className="icon text-white-50">
             <i className="fas fa-arrow-left"></i>
         </span>

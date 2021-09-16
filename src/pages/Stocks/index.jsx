@@ -5,9 +5,10 @@ import Notifications from '../../utils/notifications';
 import API_URL from '../../utils/api';
 import Layout from '../../layouts/index';
 import {Link} from 'react-router-dom';
-import "datatables.net-dt/js/dataTables.dataTables";
-import "datatables.net-dt/css/jquery.dataTables.min.css";
-import $ from 'jquery';
+import { Table, Column, HeaderCell, Cell} from 'rsuite-table';
+import TablePagination from 'rsuite/lib/Table/TablePagination';
+import 'rsuite/dist/styles/rsuite-default.css';
+import { Icon } from 'rsuite';
 
 toast.configure({
 autoClose: 8000,
@@ -16,27 +17,12 @@ draggable: false,
 
 const Stock= props =>{
 const [stocks, setStocks] = useState([])
-const [id,setId] = useState('');
-const [total_stock_purchased,setTotal_stock_purchased] = useState();
-const [total_investment,setTotal_investment] = useState();
-const [purchase_date,setPurchase_date] = useState('');
-const [purchased_from,setPurchase_from] = useState('');
-const [delivered_by,setDelivered_by] = useState('');
-const [stock_type_id,setStock_type_id] = useState(0);
+const [displayLength, setDisplayLength] = useState(10)
+const [loading, setloading] = useState(false)
+const [page, setPage] = useState(1)
 
 
 useEffect(() => {
-
-
-$('#dataTable').DataTable({
-    "ordering": true,
-    searching: true,
-    "bPaginate": true,
-     "bLengthChange": true,
-    "bFilter": true,
-    "bInfo": false,
-    "bAutoWidth": false
-});
 
 const fetchData = async() => {
 const res = await fetch(API_URL.url+'/stocks', {
@@ -95,10 +81,21 @@ position: toast.POSITION.TOP_RIGHT });
 
 }
 
+const handleChangePage=(dataKey)=>{
+setPage(dataKey);
+}
+const handleChangeLength=(dataKey)=>{
+setPage(1);
+setDisplayLength(dataKey);
+}
+const getData=()=>{
 
-return(
+return stocks.filter((v, i) => {
+const start = displayLength * (page - 1);
+const end = start + displayLength;
+return i >= start && i < end; }); } 
 
-<Layout>
+const data=getData(); return( <Layout>
     <ToastContainer />
     <div className="card shadow mb-4">
         <div className="card-header py-3">
@@ -107,11 +104,75 @@ return(
             <span className="icon text-white-50">
                 <i className="fas fa-plus"></i>
             </span>
-            <span className="text">Stock</span>
+            <span className="text">Add</span>
             </Link>
         </div>
         <div className="card-body">
-            <div className="table-responsive">
+
+            <Table data={data} loading={loading} height={350}>
+                <Column minWidth={60}>
+                    <HeaderCell>ID</HeaderCell>
+                    <Cell>
+                        {(rowData, rowIndex) => {
+                        return <span>{rowIndex+1}</span>;
+                        }}
+                    </Cell>
+                </Column>
+
+                <Column minWidth={200} flexGrow={1}>
+                    <HeaderCell>Stock Name</HeaderCell>
+                    <Cell dataKey="stock_type" />
+                </Column>
+
+                <Column minWidth={180} flexGrow={1}>
+                    <HeaderCell>Total Purchase</HeaderCell>
+                    <Cell dataKey="total_stock_purchased" />
+                </Column>
+
+                <Column minWidth={180} flexGrow={1}>
+                    <HeaderCell>Total Investment</HeaderCell>
+                    <Cell dataKey="total_investment" />
+                </Column>
+
+                <Column minWidth={200} flexGrow={1}>
+                    <HeaderCell>Purchase Date</HeaderCell>
+                    <Cell dataKey="purchase_date" />
+                </Column>
+
+                <Column minWidth={200} flexGrow={1}>
+                    <HeaderCell>Purchase From</HeaderCell>
+                    <Cell dataKey="purchased_from" />
+                </Column>
+
+                <Column minWidth={200} flexGrow={1}>
+                    <HeaderCell>Delivered by</HeaderCell>
+                    <Cell dataKey="delivered_by" />
+                </Column>
+
+                <Column minWidth={120} fixed="right">
+                    <HeaderCell>Action</HeaderCell>
+
+                    <Cell>
+                        {rowData => {
+
+                        return (
+                        <span>
+                            <Link to={"/edit-stock/"+rowData.id}> <Icon icon="edit2" />
+                            </Link> | {' '}
+                            <a onClick={()=>handleDelete(rowData.id)}>
+                                <Icon icon="trash" /> </a>
+                        </span>
+                        );
+                        }}
+                    </Cell>
+                </Column>
+
+            </Table>
+            <TablePagination lengthMenu={[ { value: 8, label: 8 }, { value: 20, label: 20 } ]} activePage={page}
+                displayLength={displayLength} total={stocks.length} onChangePage={handleChangePage}
+                onChangeLength={handleChangeLength} />
+
+            {/* <div className="table-responsive">
                 <table className="table table-striped table-bordered stocktable" id="dataTable" width="100%"
                     cellSpacing="0">
                     <thead>
@@ -134,18 +195,18 @@ return(
 
                         <tr key={index}>
                             <td>{index+1}</td>
-                            <td>{stocks.stock.stock_type}</td>                           
-                            <td>{stocks.stock.total_stock_purchased}</td>
-                            <td>{stocks.stock.total_investment}</td>
-                            <td>{stocks.stock.purchase_date}</td>
-                            <td>{stocks.stock.purchased_from}</td>
-                            <td>{stocks.stock.delivered_by}</td>
+                            <td>{stocks.stock_type}</td>
+                            <td>{stocks.total_stock_purchased}</td>
+                            <td>{stocks.total_investment}</td>
+                            <td>{stocks.purchase_date}</td>
+                            <td>{stocks.purchased_from}</td>
+                            <td>{stocks.delivered_by}</td>
                             <td>
                                 <div className="actbtns">
 
 
 
-                                    <Link to={process.env.PUBLIC_URL + "/edit-stock/"+stocks.stock.id } type="button" 
+                                    <Link to={process.env.PUBLIC_URL + "/edit-stock/" +stocks.id } type="button"
                                         className="btn btn-info"><i className="fas fa-pencil-alt"></i>
 
                                     </Link>
@@ -157,13 +218,13 @@ return(
 
 
                 </table>
-            </div>
+            </div> */}
         </div>
     </div>
-</Layout>
+    </Layout>
 
-)
+    )
 
-}
+    }
 
-export default Stock;
+    export default Stock;

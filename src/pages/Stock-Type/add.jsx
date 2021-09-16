@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
+import {InputNumber} from 'rsuite';
 
 
 toast.configure({
@@ -15,6 +16,7 @@ draggable: false,
 const AddStockType =()=>{
 
     const [type,setType] = useState('');
+    const [price,setPrice] = useState('');
 
 
         const handleSubmit = async (e) => {
@@ -31,6 +33,7 @@ const AddStockType =()=>{
                     },
                     body: JSON.stringify({
                         "type": type,
+                        "price": price,
                        
                     })
                 })
@@ -74,9 +77,18 @@ return (
                 <div className="p-5">
                     <Form className="user" onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
-
+                        <Form.Label>Stock Type</Form.Label>
                             <Form.Control className="form-control-user" name='id' 
-                                onChange={e=>setType(e.target.value)} type="text" placeholder="Enter stock type name" />
+                                onChange={e=>setType(e.target.value)} type="text" />
+
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Label>Price</Form.Label>
+                           
+
+                            <InputNumber className="form-control-user" name='price' 
+                                onChange={e=>setPrice(e)}/>
 
                         </Form.Group>
 

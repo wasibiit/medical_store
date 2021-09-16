@@ -4,6 +4,9 @@ import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
+import {Link} from 'react-router-dom';
+import { InputNumber } from 'rsuite';
+
 
 
 
@@ -108,6 +111,12 @@ return (
 
 
         <Col lg={7} md={7} sm={12}>
+        <Link to={process.env.PUBLIC_URL + "/stock-type" } className="btn btn-secondary btn-icon-split mb-3">
+            <span className="icon text-white-50">
+                <i className="fas fa-arrow-left"></i>
+            </span>
+            <span className="text">Back</span>
+            </Link>
         <div className="card shadow mb-4">
             <div className="card-header py-3">
                 <h6 className="m-0 font-weight-bold text-primary">Add Stock</h6>
@@ -118,15 +127,17 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPurchase">
-                            <Form.Control className="form-control-user" name='total_stock_purchased' onChange={e=>
-                                setTotal_stock_purchased(e.target.value)} type="number" placeholder="Enter stock (ltr)" />
-
+                           
+                        <Form.Label>Purchased Stock (ltr)</Form.Label>
+                            <InputNumber className="form-control-user" name='total_stock_purchased' onChange={e=>
+                                setTotal_stock_purchased(e)} type="number"  />
                         </Form.Group>
 
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicInvest">
+                        <Form.Label>Investment (Rs)</Form.Label>
                             <Form.Control className="form-control-user" name='total_investment' onChange={e=>
-                                setTotal_investment(e.target.value)} type="number" placeholder="Enter total investment (Rs)" />
+                                setTotal_investment(e.target.value)} type="number"  />
 
                         </Form.Group>
 
@@ -135,15 +146,16 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPDate">
-
+                        <Form.Label>Purchase Date</Form.Label>
                         <Form.Control className="form-control-user" name='purchase_date' onChange={e=>
-                                setPurchase_date(e.target.value)} type="date" placeholder="Select purchase date" />
+                                setPurchase_date(e.target.value)} type="date"  />
 
                         </Form.Group>
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicPurfrom">
+                        <Form.Label>Purchase From</Form.Label>
                             <Form.Control className="form-control-user" name='purchased_from' onChange={e=>
-                                setPurchase_from(e.target.value)} type="text" placeholder="Enter purchase from" />
+                                setPurchase_from(e.target.value)} type="text"  />
 
                         </Form.Group>
 
@@ -152,18 +164,20 @@ return (
                     <div className="row">
 
                         <Form.Group className="mb-3 col-lg-6 col-md-6 col-sm-12 col-12" controlId="formBasicDby">
+                        <Form.Label>Delivered By</Form.Label>
                             <Form.Control className="form-control-user" name='delivered_by' onChange={e=>
-                                setDelivered_by(e.target.value)} type="text" placeholder="Enter Delivered by" />
+                                setDelivered_by(e.target.value)} type="text" />
 
                         </Form.Group>
 
                         <div className="form-group col-lg-6 col-md-6 col-sm-12 col-12">
+                        <Form.Label>Stock Type</Form.Label>
                             <select name="stocktype" id="gender" className="form-control-user form-control"
                                 onChange={onchangefun} value={stock_type_id}>
 
                                <option defaultValue={stock_type_id}>Select Stock Type</option>
-                                {stocktypelist.map((stock,i)=>(<option key={i} value={stock.stock_type.id}>
-                                    {stock.stock_type.type}</option>))}
+                                {stocktypelist.map((stock,i)=>(<option key={i} value={stock.id}>
+                                    {stock.type}</option>))}
 
                             </select>
                         </div>

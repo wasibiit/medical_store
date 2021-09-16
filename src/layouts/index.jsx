@@ -15,7 +15,9 @@ const ToggleFunction=()=>{
     return(
     <Fragment>
         <div id="wrapper" >
+       
         <Sidebar togglecls={toggle} />
+        
         <div id="content-wrapper" className="d-flex flex-column">
         <div id="content">
         <Header clickfun={ToggleFunction} />

@@ -3037,6 +3037,76 @@ input[type="button"].btn-block {
 .stocktable tbody tr td:last-child {
   width: 70px !important;
 }
+.rs-table-cell-content span a:first-child {
+  margin-left: 0;
+}
+.rs-table-cell-content span a {
+  margin: 0 10px;
+  text-decoration: none;
+}
+.rs-table-cell-content span a:last-child{
+  color: #f44336;
+  cursor: pointer;
+}
+.rs-table-cell-header .rs-table-cell-content{
+  font-size: 15px !important;
+  line-height: normal !important;
+  font-weight: 400;
+  color: #102035;
+}
+.rs-picker-default .rs-picker-toggle.rs-btn {
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border:none !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+
+}
+
+.rs-input-number > .rs-input {
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border:none !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+
+}
+.rs-input-number-btn-group-vertical{
+  display: none !important;
+}
+
+.rs-picker-default .rs-picker-toggle.rs-btn .rs-picker-toggle-caret, .rs-picker-default .rs-picker-toggle.rs-btn .rs-picker-toggle-clean {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+span.form-control-user {
+  display: block;
+  width: 100%;
+  font-weight: 400;
+  line-height: 38px;
+  color: #6e707e;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #d1d3e2;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* input.react-datetime-pickers-input {
+  font-size: 15px;
+  border-radius: 10rem;
+  padding: 5px 1rem;
+  height: 50px;
+  outline: none;
+
+} */
+
+.modal-open .modal {
+  opacity: 1 !important;
+}
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -10909,7 +10979,7 @@ form.user .custom-checkbox.small label {
 }
 
 form.user .form-control-user {
-  font-size: 0.8rem;
+  font-size: 15px;
   border-radius: 10rem;
   padding: 5px 1rem;
   height: 50px;

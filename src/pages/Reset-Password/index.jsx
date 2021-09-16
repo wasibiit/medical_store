@@ -16,9 +16,7 @@ const ForgotPsd=()=>{
     
     let prid = params.id;
 
-    const hello = prid.replace(':','');
-
-    console.log(hello);
+    const id = prid.replace(':','');
 
 
     const handleSubmit= async(event)=>{
@@ -34,39 +32,26 @@ const ForgotPsd=()=>{
                 "Accept": "application/json",             
             },
             body: JSON.stringify({
-                "id":hello,
+                "id":id,
                 "password": newpassword
             })
         }).then((response)=>{
             response.json().then((result)=>{
                
         
-                toast.success(`${Notifications.loginsuccess}`, {
+                toast.success(`${Notifications.resetpass}`, {
                     position: toast.POSITION.TOP_RIGHT      });
         
         
             })
         }).catch((error)=>{
            
-                toast.error(`${Notifications.notlogin}`, {
+                toast.error(`${Notifications.notpasswordsame}`, {
                     position: toast.POSITION.TOP_RIGHT      });
         })
         }
 
-        const onchange=(e)=>{
-
-           
-
-            if (e.target.value !== newpassword) {
-                
-                console.log("please enter same password");
-
-              } else{
-                  console.log("password same");
-                setConfirmpassword(e.target.value);
-              }
-
-        }
+   
 
     
     return (
@@ -92,15 +77,10 @@ const ForgotPsd=()=>{
                                     <Form className="user" onSubmit={handleSubmit}>
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                            
-                                            <Form.Control className="form-control-user" type="password" placeholder="Enter new password" onChange={(e)=>setNewpassword(e.target.value)} />
+                                            <Form.Control className="form-control-user" type="password" placeholder="Enter new password" onChange={(e)=>setNewpassword(e.target.value)} required />
                                           
                                         </Form.Group>
-                                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                                           
-                                            <Form.Control className="form-control-user" type="password" placeholder="Enter confirm password" onChange={onchange} />
-                                          
-                                        </Form.Group>
-
+                                        
                                        
                                       
                                         <Button variant="primary" type="submit" className="btn-user btn-block">
