@@ -4,7 +4,8 @@ import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
-import { useParams, Link } from "react-router-dom";
+import { useLocation, Link, useHistory } from "react-router-dom";
+import Spinner from 'react-bootstrap/Spinner';
 
 
 toast.configure({
@@ -12,9 +13,10 @@ autoClose: 8000,
 draggable: false,
 });
 
-const EditStock =()=>{
+const EditStock =(props)=>{
 
-    const params = useParams();
+    const {state} = useLocation();
+    const history = useHistory();
 
     const [id,setId] = useState('');
     const [machine,setMachine] = useState('');
@@ -22,54 +24,33 @@ const EditStock =()=>{
     const [stock_type_id,setStock_type_id] = useState(0);
     const [stock_type,setStock_type] = useState('');
     const [stocktypelist,setStocktypelist] = useState([]);
+    const [loading, setloading] = useState(false);
+    const [prloading, setprloading] = useState(false);
 
     useEffect(() => {
         
-        fetch(API_URL.url+`/fuel-dispenser/${params.id}`, {
-            method: "GET",
-            headers: {
-                "Origin": "*",               
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": `Bearer ${Notifications.token}`             
-               
-            }
-        })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                   
-                    console.log(result)
-                   
-                    setId(result.id);
-                    setMachine(result.machine);
-                    setMeter(result.meter);
-                    setStock_type(result.stock_type);
-                    setStock_type_id(result.stock_type_id);
-                    
-                },
-                (error) => {
-                    // toast.error(`${Notifications.stockaddfailed}`, {
-                    //     position: toast.POSITION.TOP_RIGHT      });
-                }
-            )
-
+        
+        fetchData();
             // Fetch Stock Type Data
 
             fetch(API_URL.url+'/stock-types', {
-                method: "GET",
+                method: "POST",
                 headers: {
                 "Origin": "*",
                 "Content-Type": "application/json",
                 "Accept": "application/json",
                 "Authorization": `Bearer ${Notifications.token}`
-                }
+                },
+                body: JSON.stringify({
+                    "resource": "stock_types",
+                    "method": "GET"
+                })
                 })
                 .then(res => res.json())
                 .then(
                 (response) => {
                     setStocktypelist(response.data);
-                console.log(response.data);
+                
                 },
                 (error) => {
                 }
@@ -78,6 +59,40 @@ const EditStock =()=>{
                 
         
         },[])
+
+
+        const fetchData=async ()=>{
+            setloading(true);
+            fetch(API_URL.url+`/fuel-dispenser`, {
+                method: "POST",
+                headers: {
+                    "Origin": "*",               
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${Notifications.token}`             
+                   
+                },
+                body: JSON.stringify({
+                    "id": props.location.state,
+                    "resource": "fuel_dispensers",
+                    "method": "GET",
+                    })
+            })
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                       
+                       
+                        setId(result.id);
+                        setMachine(result.machine);
+                        setMeter(result.meter);
+                        setStock_type(result.stock_type);
+                        setStock_type_id(result.stock_type_id);
+                        setloading(false);
+                    }
+                    
+                )
+        }
 
         const onchangefun=(e)=>{
 
@@ -89,8 +104,8 @@ const EditStock =()=>{
 
         const handleUpdate = async (e) => {
             e.preventDefault();
-    
-            await fetch(API_URL.url+`/fuel-dispenser`, {
+            setprloading(true);
+            await fetch(API_URL.url+"/fuel-dispenser", {
                 method: "PUT",
                 headers: {
                     "Origin": "*",               
@@ -101,6 +116,8 @@ const EditStock =()=>{
                 },
                 body: JSON.stringify({
                     "id": `${id}`,
+                    "resource": "fuel_dispensers",
+                    "method": "UPDATE",
                     "machine": machine,
                     "meter": meter,
                     "stock_type_id": `${stock_type_id}`,
@@ -110,7 +127,8 @@ const EditStock =()=>{
                 .then(res => res.json())
                 .then(
                     (result) => {
-                       
+                        setprloading(false);
+                        history.push('/fuel_dispensers');                       
                         toast.success(`${Notifications.updatedsuccess}`, {
                             position: toast.POSITION.TOP_RIGHT      });
                     },
@@ -128,7 +146,7 @@ return (
 <Layout>
     <ToastContainer />
     <Row>
-    <Col lg={7} md={7} sm={12}>
+    <Col lg={6} md={6} sm={12}>
     <Link to={process.env.PUBLIC_URL + "/fuel_dispensers" } className="btn btn-secondary btn-icon-split mb-3">
             <span className="icon text-white-50">
                 <i className="fas fa-arrow-left"></i>
@@ -140,10 +158,10 @@ return (
                 <h6 className="m-0 font-weight-bold text-primary">Edit Fuel Dispenser</h6>
             </div>
             <div className="card-body">
-
-            <Form className="user" onSubmit={handleUpdate}>
+            {
+                                loading?<><div className="prloader"><Spinner animation="border" variant="primary" /></div>
+                               </>:  <Form className="user" onSubmit={handleUpdate}>
                   
-
                   <Form.Group  controlId="formBasicPurchase">
                       <Form.Control className="form-control-user" name='machine' value={machine} onChange={e=>
                           setMachine(e.target.value)} type="text" placeholder="Enter machine name" />
@@ -171,7 +189,12 @@ return (
               <Button variant="primary" type="submit" className="btn-user btn-block">
                   Update
               </Button>
+              {
+                                prloading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
           </Form>
+                            }
+            
 
 
 

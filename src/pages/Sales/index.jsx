@@ -1,14 +1,21 @@
 import React, { useState, useEffect} from 'react';
-import {Form,Button} from 'react-bootstrap'
-import { ToastContainer, toast } from 'react-toastify';
+import NumberFormat from 'react-number-format';
+import { toast } from 'react-toastify';
 import Notifications from '../../utils/notifications';
 import API_URL from '../../utils/api';
+import {getpermit} from '../../utils/common';
 import Layout from '../../layouts/index';
 import {Link} from 'react-router-dom';
 import { Table, Column, HeaderCell, Cell} from 'rsuite-table';
-import TablePagination from 'rsuite/lib/Table/TablePagination';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { createTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Pagination from "material-ui-flat-pagination";
 import 'rsuite/dist/styles/rsuite-default.css';
 import { Icon } from 'rsuite';
+import Spinner from 'react-bootstrap/Spinner';
+
+
+const theme = createTheme();
 
 toast.configure({
 autoClose: 8000,
@@ -17,40 +24,43 @@ draggable: false,
 
 const Saleslist= props =>{
 const [saleslist, setSaleslist] = useState([]);
-const [displayLength, setDisplayLength] = useState(10);
 const [loading, setloading] = useState(false);
-const [page, setPage] = useState(1);
-
+const [offset, setOffset] = useState(1);
+const [alength, setalength] = useState();
 
 useEffect(() => {
 
+    fetchData(offset);
+    }, [offset])
 
-const fetchData = async() => {
-const res = await fetch(API_URL.url+'/sales', {
-
-method: "GET",
-headers: {
-"Origin": "*",
-"Content-Type": "application/json",
-"Accept": "application/json",
-"Authorization": `Bearer ${Notifications.token}`
-}
-})
-.then(res => res.json())
-.then(
-(resp) => {
-setSaleslist(resp.data);
-console.log(resp.data);
-
-},
-(error) => {
-}
-)
-
-}
-
-fetchData();
-}, [])
+const fetchData = async(offset) => {
+    setloading(true);
+    const res = await fetch(API_URL.url+'/sales', {
+    
+    method: "POST",
+    headers: {
+    "Origin": "*",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": `Bearer ${Notifications.token}`
+    },
+    body: JSON.stringify({
+        "resource": "sales",
+       "method": "GET"
+   })   
+    })
+    .then(res => res.json())
+    .then(
+    (resp) => {
+    setSaleslist(resp.data);
+    setalength(resp.total);
+    setloading(false);
+    },
+    (error) => {
+    }
+    )
+    
+    }
 
 
 function handleDelete(id) {
@@ -66,57 +76,62 @@ headers: {
 },
 body: JSON.stringify({
 "id": `${id}`,
+"resource": "sales",
+"method": "DELETE",
 })
 })
 .then(res => res.json())
 .then(
 (result) => {
 
-toast.success(`${Notifications.deletedsuccess}`, {
+if(Object.prototype.hasOwnProperty.call(result, 'error')) {
+    toast.error(`${result["error"]["message"]}`, {
+    position: toast.POSITION.TOP_RIGHT });
+
+} else {
+    fetchData(offset);
+ toast.success(`${Notifications.deletedsuccess}`, {
 position: toast.POSITION.TOP_RIGHT });
-window.location.reload();
-},
-(error) => {
-toast.error(`${Notifications.notdeletedsuccess}`, {
-position: toast.POSITION.TOP_RIGHT });
+}
+
 })
 
 }
 
-const handleChangePage=(dataKey)=>{
-    setPage(dataKey);
-    }
-    const handleChangeLength=(dataKey)=>{
-    setPage(1);
-    setDisplayLength(dataKey);
-    }
-    const getData=()=>{
-    
-    return saleslist.filter((v, i) => {
-    const start = displayLength * (page - 1);
-    const end = start + displayLength;
-    return i >= start && i < end; }); } 
-    
-    const data=getData(); 
+const handleClick=(offset)=>{
+    setOffset(offset)
+    fetchData(offset);
 
+}
+    
+ // ======== Permissions Data =========
+ let addbtns;
+
+ if(1<getpermit("sales")){
+
+         addbtns =<Link to={process.env.PUBLIC_URL + "/add-sale" } className="btn btn-primary btn-icon-split">
+     <span className="icon text-white-50">
+         <i className="fas fa-plus"></i>
+     </span>
+     <span className="text">Add</span>
+     </Link>;       
+
+ } else {
+     addbtns = <span></span>;
+ }
 
 return(
 
 <Layout>
-    <ToastContainer />
+    
     <div className="card shadow mb-4">
         <div className="card-header py-3">
             <h4 className="m-0 font-weight-bold text-primary">Sales List</h4>
-            <Link to={process.env.PUBLIC_URL + "/add-sale" } className="btn btn-primary btn-icon-split">
-            <span className="icon text-white-50">
-                <i className="fas fa-plus"></i>
-            </span>
-            <span className="text">Add</span>
-            </Link>
+           {addbtns}
         </div>
         <div className="card-body">
-        <Table   data={data} loading={loading} height={350} >
-                <Column minWidth={70}>
+        <Table   data={saleslist} loading={loading} height={350} >
+                <Column minWidth={50} flexGrow={1}>
                     <HeaderCell>ID</HeaderCell>
 
                    <Cell>
@@ -126,53 +141,80 @@ return(
       </Cell>
                 </Column>
 
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={160} flexGrow={2}>
                     <HeaderCell>Employee</HeaderCell>
                     <Cell dataKey="employee_name" />
                 </Column> 
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={120} flexGrow={1}>
                     <HeaderCell>Fuel Dispenser</HeaderCell>
                     <Cell dataKey="fuel_dispenser_name" />
+                </Column>  
+                <Column minWidth={120} flexGrow={2}>
+                    <HeaderCell>Sale Amount (Rs)</HeaderCell>
+                   
+                    <Cell>
+                        {(rowData, rowIndex) => {
+                        return <span>{<NumberFormat value={rowData.total_sale_amount} displayType={'text'} thousandSeparator={true}  />}</span>;
+                        }}
+                    </Cell>
                 </Column>
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={100} flexGrow={2}>
                     <HeaderCell>Start Meter</HeaderCell>
                     <Cell dataKey="start_meter" />
                 </Column>  
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={100} flexGrow={2}>
                     <HeaderCell>End Meter</HeaderCell>
                     <Cell dataKey="end_meter" />
                 </Column> 
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={110} flexGrow={2}>
                     <HeaderCell>Started At</HeaderCell>
                     <Cell dataKey="started_at" />
                 </Column>
-                <Column minWidth={200} flexGrow={3}>
+                <Column minWidth={110} flexGrow={2}>
                     <HeaderCell>Ended At</HeaderCell>
                     <Cell dataKey="ended_at" />
                 </Column>
               
-                <Column minWidth={120} fixed="right" flexGrow={1}>
+                <Column width={100} fixed="right">
                     <HeaderCell>Action</HeaderCell>
 
                     <Cell>
                         {rowData => {
 
                         return (
-                        <span>
-                            <Link to={"/edit-sale/"+rowData.id}> <Icon icon="edit2" />
-                            </Link> | {' '}
-                            <a onClick={()=>handleDelete(rowData.id)}>
-                                <Icon icon="trash" /> </a>
-                        </span>
+
+                        <>
+
+                        {(() => {
+                            
+                            if(2<getpermit("sales")){
+                            return (  <Link to={{pathname: "/edit-sale", state: rowData.id }}> <Icon icon="edit2" />
+                            </Link>)
+                                    }
+                                  
+                               
+                    })()}
+
+                    <span className="ml-3">
+                    {3<getpermit("sales")? <a href alt={rowData.id} onClick={()=>handleDelete(rowData.id)}>
+                                <Icon icon="trash" /> </a>:<span></span>}
+                                </span>
+                        </>
                         );
                         }}
                     </Cell>
                 </Column>
 
             </Table>
-            <TablePagination lengthMenu={[ { value: 8, label: 8 }, { value: 20, label: 20 } ]} activePage={page}
-                displayLength={displayLength} total={saleslist.length} onChangePage={handleChangePage}
-                onChangeLength={handleChangeLength} />
+            <MuiThemeProvider theme={theme}>
+            <CssBaseline />
+            <Pagination
+            limit={10}
+            offset={offset}
+            total={alength}
+            onClick={(e, offset) => handleClick(offset)}
+            />
+        </MuiThemeProvider>
         </div>
     </div>
 </Layout>

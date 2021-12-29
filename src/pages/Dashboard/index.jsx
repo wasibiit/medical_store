@@ -1,37 +1,43 @@
-import { Chart } from "react-google-charts";
+import React,{useEffect,useState} from "react";
 import Layout from '../../layouts/index';
+import Admindashboard from './admin/index';
+import {getpermit,getToken} from '../../utils/common';
 
 
 const Dashboard=()=>{
 
+  const [employee_name,setEmployee_name] = useState('');
 
+  useEffect(() => {
 
+    
+    setEmployee_name(getToken("uname"));
+         
+ },[]);
 
 return(
 
 <Layout>
+{(() => {
+                            
+
+ if(3<getpermit("roles")){
+
+  return (
+    <Admindashboard/>
+  )
+} else {
+
+  return(
+
+    <div><h1 className="h3">Welcome {employee_name}</h1></div>
+  )
+}
+
+})()}
 
 
-  <div className="col-llg-6 col-md-6 col-sm-12 col-12">
-
-    <Chart width={'100%'} height={'300px'} chartType="PieChart" loader={
-    <div>Loading Chart</div>}
-    data={[
-    ['Task', 'Hours per Day'],
-    ['Sale', 75],
-    ['Remaing', 15],
-
-    ]}
-    options={{
-      title: 'My Daily Activities',
-    }}
-    rootProps={{ 'data-testid': '1' }}
-    />
-  </div>
-
-
-
-  <h1 className="h3 mb-4 text-gray-800">Blank Page</h1>
+                          
 
 </Layout>
 

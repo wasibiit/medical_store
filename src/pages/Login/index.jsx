@@ -1,11 +1,12 @@
 import React,{useState,useEffect}from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import {setCookie,getToken} from "../../utils/common";
+import {setCookie,getToken,setPermitList} from "../../utils/common";
 import { NavLink } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import { useHistory } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 toast.configure({
@@ -19,6 +20,7 @@ const [validated, setValidated] = useState(false);
 const [bgimg,setBgimg] = useState('img/loginimg.jpg');
 const [email,setEmail] = useState('');
 const [password,setPassword] = useState('');
+const [loading, setloading] = useState(false);
 
 const history = useHistory();
 
@@ -35,10 +37,16 @@ useEffect(() => {
 }, [])
 
 
+
+const fldChange=()=>{
+
+    setloading(false);
+}
+
 const handleSubmit= async(event)=>{
     event.preventDefault();
 
-
+    setloading(true);
         await fetch(API_URL.url+'/login',{
             method:"POST",
             headers: {
@@ -52,7 +60,7 @@ const handleSubmit= async(event)=>{
             })
         }).then((response)=>{
             response.json().then((result)=>{
-        
+
         
                 if (result.token === null || result.token === undefined) {
                     
@@ -61,12 +69,28 @@ const handleSubmit= async(event)=>{
         
                         // history.push('/login');
                 } else {
-                    
-                   setCookie("token", result.token+":0z54x3"+result.role+"y9kv638")
+
+                    let perm = result.permissions;
+
+                    let reslt;
+                      perm.filter((key)=>{
+  
+                          if(key.resource==="users"){
+                      
+                          reslt = key.role;
+                          }
+                          })
+  
+                        
+                          setloading(false);
+                   setCookie("token", result.token+":0z54x3"+reslt+"y9kv638")
                 history.push('/dashboard');
-                    window.location.href = "/dashboard";
-                }
-                   
+                window.location.href = "/dashboard";
+                setPermitList("permissions",result.permissions);
+                setCookie("uname", result.name);
+
+
+                };  
         
             })
         }).catch((error)=>{
@@ -109,19 +133,22 @@ return (
                             <Form.Group className="mb-3" controlId="validationCustom01">
                           
                                 <Form.Control className="form-control-user" name='text' 
-                                    onChange={e=>setEmail(e.target.value)} type="text" placeholder="Enter email" required />
+                                    onChange={e=>setEmail(e.target.value)} onFocus={fldChange} type="text" placeholder="Enter email" required />
 
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="validationCustom02">
 
                                 <Form.Control className="form-control-user" name="password" 
-                                    onChange={e=>setPassword(e.target.value)} type="password" placeholder="Password" required />
+                                    onChange={e=>setPassword(e.target.value)} onFocus={fldChange} type="password" placeholder="Password" required />
                             </Form.Group>
 
-                            <Button variant="primary" type="submit" className="btn-user btn-block">
+                            <Button variant="primary" type="submit" disabled={loading} className="btn-user btn-block">
                                 Submit
                             </Button>
+                            {
+                                loading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
                         </Form>
 
 

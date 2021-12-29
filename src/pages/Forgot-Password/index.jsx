@@ -1,22 +1,25 @@
 import React,{useState}from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
+import Spinner from 'react-bootstrap/Spinner';
 
 const ForgotPsd=()=>{
 
    
     const [bgimg,setBgimg]=useState('img/login-punch.png');
     const [email,setEmail]=useState('');
+    const [loading, setloading] = useState(false);
 
+    const history = useHistory();
 
     const handleSubmit= async(event)=>{
 
         event.preventDefault();
         
-        
+        setloading(true);
         await fetch(API_URL.url+'/forget',{
             method:"POST",
             headers: {
@@ -31,14 +34,16 @@ const ForgotPsd=()=>{
             response.json().then((result)=>{
                
         
-                toast.success(`${Notifications.loginsuccess}`, {
+                setloading(false);
+                history.push('/login');
+                toast.success(`Reset password link has sent in your email please check`, {
                     position: toast.POSITION.TOP_RIGHT      });
         
         
             })
         }).catch((error)=>{
            
-                toast.error(`${Notifications.notlogin}`, {
+                toast.error(`Reset password request not sent`, {
                     position: toast.POSITION.TOP_RIGHT      });
         })
         }
@@ -74,9 +79,12 @@ const ForgotPsd=()=>{
 
                                        
                                       
-                                        <Button variant="primary" type="submit" className="btn-user btn-block">
+                                        <Button variant="primary" disabled={loading} type="submit" className="btn-user btn-block">
                                             Reset Password
                                         </Button>
+                                        {
+                                loading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
                                         </Form>
                                      
                                    

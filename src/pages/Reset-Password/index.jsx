@@ -1,10 +1,11 @@
 import React,{useState,useEffect}from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import { NavLink, useParams,useHistory } from "react-router-dom";
 import { getToken } from '../../utils/common';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
+import Spinner from 'react-bootstrap/Spinner';
 
 const ForgotPsd=()=>{
 
@@ -13,6 +14,7 @@ const ForgotPsd=()=>{
     const [bgimg,setBgimg]=useState('img/login-punch.png');
     const [newpassword,setNewpassword]=useState('');
     const [confirmpassword,setConfirmpassword]=useState('');
+    const [loading, setloading] = useState(false);
 
     const history = useHistory();
     
@@ -36,7 +38,7 @@ const ForgotPsd=()=>{
 
         event.preventDefault();
         
-        
+        setloading(true);
         await fetch(API_URL.url+'/forget',{
             method:"POST",
             headers: {
@@ -51,7 +53,7 @@ const ForgotPsd=()=>{
         }).then((response)=>{
             response.json().then((result)=>{
                
-        
+                setloading(false);
                 toast.success(`${Notifications.resetpass}`, {
                     position: toast.POSITION.TOP_RIGHT      });
         
@@ -62,6 +64,14 @@ const ForgotPsd=()=>{
                 toast.error(`${Notifications.notpasswordsame}`, {
                     position: toast.POSITION.TOP_RIGHT      });
         })
+        }
+
+        const changepassword=(e)=>{
+
+            setloading(false);
+
+            setNewpassword(e.target.value);
+
         }
 
    
@@ -90,15 +100,18 @@ const ForgotPsd=()=>{
                                     <Form className="user" onSubmit={handleSubmit}>
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                            
-                                            <Form.Control className="form-control-user" type="password" placeholder="Enter new password" onChange={(e)=>setNewpassword(e.target.value)} required />
+                                            <Form.Control className="form-control-user" type="password" placeholder="Enter new password" onChange={(e)=>changepassword(e)} required />
                                           
                                         </Form.Group>
                                         
                                        
                                       
-                                        <Button variant="primary" type="submit" className="btn-user btn-block">
+                                        <Button variant="primary" disabled={loading} type="submit" className="btn-user btn-block">
                                             Reset Password
                                         </Button>
+                                        {
+                                loading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
                                         </Form>
                                      
                                    

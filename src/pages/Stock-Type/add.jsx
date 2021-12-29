@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
-import {Row,Col,Form,Button} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import React,{useState} from 'react';
+import {toast } from 'react-toastify';
+import {Row,Col} from 'react-bootstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import API_URL from '../../utils/api';
 import Notifications from '../../utils/notifications';
 import Layout from '../../layouts/index';
-import {InputNumber} from 'rsuite';
+import { useHistory,Link } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 toast.configure({
@@ -15,14 +17,42 @@ draggable: false,
 
 const AddStockType =()=>{
 
-    const [type,setType] = useState('');
-    const [price,setPrice] = useState('');
+    const history = useHistory();  
+    const [loading, setloading] = useState(false);      
+          
+return (
+<Layout>
+   
+    <Row>
 
+        <Col lg={6} md={6} sm={12}>
+        <Link to={process.env.PUBLIC_URL + "/brands" } className="btn btn-secondary btn-icon-split mb-3">
+            <span className="icon text-white-50">
+                <i className="fas fa-arrow-left"></i>
+            </span>
+            <span className="text">Back</span>
+            </Link>
+        <div className="card shadow mb-4">
+            <div className="card-header py-3">
+                <h6 className="m-0 font-weight-bold text-primary">Add Brand</h6>
+            </div>
+            <div className="card-body">
+                <div className="p-5">
 
-        const handleSubmit = async (e) => {
-                e.preventDefault();
-        
-                await fetch(API_URL.url+'/stock-type', {
+                <Formik
+                initialValues={{
+                    type: '',
+                  
+                   
+                }}
+                validationSchema={Yup.object().shape({
+                    type: Yup.string()
+                        .required('Brand is required'),
+                    
+                })}
+                onSubmit={fields => {
+                    setloading(true);
+                    fetch(API_URL.url+'/brand', {
                     method: "POST",
                     headers: {
                         "Origin": "*",               
@@ -32,8 +62,9 @@ const AddStockType =()=>{
                        
                     },
                     body: JSON.stringify({
-                        "type": type,
-                        "price": price,
+                        "name": fields.type,                      
+                        "resource": "brands",
+                        "method": "POST"
                        
                     })
                 })
@@ -41,6 +72,9 @@ const AddStockType =()=>{
                     .then(
                         (result) => {
                            
+                            history.push('/brands');
+
+                            setloading(false);
                             
                             toast.success(`${Notifications.addedsuccess}`, {
                                 position: toast.POSITION.TOP_RIGHT      });
@@ -48,54 +82,29 @@ const AddStockType =()=>{
                                
                         },
                         (error) => {
+
                             toast.error(`${Notifications.notaddfailed}`, {
                                 position: toast.POSITION.TOP_RIGHT      });
                         }
                     )
-           
-            }
-        
-          
-return (
-<Layout>
-    <ToastContainer />
-    <Row>
-
-
-        <Col lg={6} md={6} sm={12}>
-        <Link to={process.env.PUBLIC_URL + "/stock-type" } className="btn btn-secondary btn-icon-split mb-3">
-            <span className="icon text-white-50">
-                <i className="fas fa-arrow-left"></i>
-            </span>
-            <span className="text">Back</span>
-            </Link>
-        <div className="card shadow mb-4">
-            <div className="card-header py-3">
-                <h6 className="m-0 font-weight-bold text-primary">Add Stock Type</h6>
-            </div>
-            <div className="card-body">
-                <div className="p-5">
-                    <Form className="user" onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Stock Type</Form.Label>
-                            <Form.Control className="form-control-user" name='id' 
-                                onChange={e=>setType(e.target.value)} type="text" />
-
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Price</Form.Label>
-                           
-
-                            <InputNumber className="form-control-user" name='price' 
-                                onChange={e=>setPrice(e)}/>
-
-                        </Form.Group>
-
-                        <Button variant="primary" type="submit" className="btn-user btn-block">
-                            Submit
-                        </Button>
+                }}
+                render={({ errors, status, touched }) => (
+                    <Form className="user">
+                        <div className="form-group">
+                            <label htmlFor="type">Brand</label>
+                            <Field name="type" type="text" className={'form-control-user form-control' + (errors.type && touched.type ? ' is-invalid' : '')} />
+                            <ErrorMessage name="type" component="div" className="invalid-feedback" />
+                        </div>
+                      
+                        <div className="form-group mb-0">
+                            <button type="submit" disabled={loading} className="btn-user btn-block btn btn-primary mb-2">Submit</button>
+                            {
+                                loading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
+                        </div>
                     </Form>
+                )}
+            />
 
                 </div>
 

@@ -5,6 +5,7 @@ import { getToken } from '../../utils/common';
 import {Container,Row,Col,Form,Button} from 'react-bootstrap';
 import { NavLink, Redirect,useHistory } from 'react-router-dom';
 import API_URL from '../../utils/api';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 toast.configure({
@@ -20,12 +21,13 @@ const Register =()=>{
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     const [gender,setGender] = useState('');
+    const [roleid,setRoleid] = useState('');
     const [redirect,setRedirect] = useState(false);
+    const [loading, setloading] = useState(false);
 
     const history = useHistory();
 
     
-
 useEffect(() => {
 
     if(getToken("token")){
@@ -37,10 +39,17 @@ useEffect(() => {
 
 }, [])
 
+const changeEmail=(e)=>{
+
+    setloading(false);
+    setEmail(e.target.value)
+}
+
 
     const submit = async (e) => {
         e.preventDefault();
 
+        setloading(true);
         await fetch(API_URL.url+'/register', {
             method: "POST",
             headers: {
@@ -51,15 +60,17 @@ useEffect(() => {
             },
             body: JSON.stringify({
                 "name": name,
-                "email": email,
+                "login": email,
                 "password": password,
-                "gender": gender
+                "gender": gender,
+                "role_id": roleid,
             })
         })
             .then(res => res.json())
             .then(
                 (result) => {
-                   
+                    history.push('/login');
+                    setloading(false);
                     toast.success(`${Notifications.regsuccess}`, {
                         position: toast.POSITION.TOP_RIGHT      });
                 },
@@ -69,15 +80,9 @@ useEffect(() => {
                 }
             )
 
-            setRedirect(true);
-   
     }
 
-     if(redirect){
-
-        return <Redirect to="/login"/>;
-     }
-
+   
   
 
     return (
@@ -106,7 +111,7 @@ useEffect(() => {
 
                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                            
-                                           <Form.Control className="form-control-user" type="email" placeholder="Enter email" onChange={e=>setEmail(e.target.value)} required/>
+                                           <Form.Control className="form-control-user" type="text" placeholder="Enter email / phone" onChange={e=>changeEmail(e)} required/>
                                          
                                        </Form.Group>
 
@@ -118,16 +123,27 @@ useEffect(() => {
 
                                        <div className="form-group">
                                            <select name="gender" id="gender" className="form-control-user form-control" onChange={e=>setGender(e.target.value)} required>
-                                           <option>Gender</option>
+                                           <option hidden>Gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                            </select>
                                        </div>
+                                       
+                                       <div className="form-group">
+                                           <select name="role_id" id="role_id" className="form-control-user form-control" onChange={e=>setRoleid(e.target.value)} required>
+                                           <option hidden>Role</option>
+                                            <option value="customer">Customer</option>
+                                            <option value="provider">Provider</option>
+                                           </select>
+                                       </div>
                                       
                                       
-                                        <Button variant="primary" type="submit" className="btn-user btn-block">
+                                        <Button variant="primary" disabled={loading} type="submit" className="btn-user btn-block">
                                             Register
                                         </Button>
+                                        {
+                                loading?<Spinner animation="border" variant="primary" className="mt-3" />:<span></span>
+                            }
                                         </Form>
                                      
                                    

@@ -1,9 +1,16 @@
-import React,{useEffect} from "react";
+import React,{useEffect,useState} from "react";
 import {Dropdown} from 'react-bootstrap';
+import {getToken} from "../../utils/common";
 
 const Header =(props)=>{
+const [employee_name,setEmployee_name] = useState('');
 
-   
+    useEffect(() => {
+
+    setEmployee_name(getToken("uname"));
+            
+            
+    },[]);
 
    const logout=()=>{
         localStorage.clear();
@@ -182,20 +189,14 @@ return(
 
 
             <Dropdown as="li" className="nav-item dropdown no-arrow">
-                <Dropdown.Toggle as="a" href="#" id="dropdown-basic" className="nav-link dropdown-toggle">
-                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                <Dropdown.Toggle as="a"  id="dropdown-basic" className="nav-link dropdown-toggle">
+                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">{employee_name}</span>
                     <img className="img-profile rounded-circle" src="img/undraw_profile.svg" />
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="dropdown-menu dropdown-menu-right shadow" aria-labelledby="userDropdown">
-                    {/* <Dropdown.Item href="#/action-1"> <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Profile</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2"> <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Settings</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3"> <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Activity Log</Dropdown.Item>
-                    <Dropdown.Divider /> */}
-                    <Dropdown.Item href="#/item" onClick={logout}>
+                   
+                    <Dropdown.Item  onClick={logout}>
                         <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                         Logout
                     </Dropdown.Item>
