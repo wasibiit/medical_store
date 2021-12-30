@@ -29,7 +29,7 @@ const [loading, setloading] = useState(false);
 const [prloading, setprloading] = useState(false);
 const [id, setId] = useState('');
 const [stock_type, setStock_type] = useState('');
-const [offset, setOffset] = useState(1);
+const [offset, setOffset] = useState(0);
 const [alength, setalength] = useState();
 
 
@@ -293,7 +293,7 @@ return(
           <span aria-hidden="true">&times;</span>
         </button>
                             </div>
-                            <div className="card-body">
+                            <div className="card-body ha">
                             <div className="p-5">
 
                             {

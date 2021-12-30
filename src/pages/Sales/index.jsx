@@ -25,7 +25,7 @@ draggable: false,
 const Saleslist= props =>{
 const [saleslist, setSaleslist] = useState([]);
 const [loading, setloading] = useState(false);
-const [offset, setOffset] = useState(1);
+const [offset, setOffset] = useState(0);
 const [alength, setalength] = useState();
 
 useEffect(() => {
@@ -35,8 +35,7 @@ useEffect(() => {
 
 const fetchData = async(offset) => {
     setloading(true);
-    const res = await fetch(API_URL.url+'/sales', {
-    
+    const res = await fetch(API_URL.url+'/medicine-sales', {
     method: "POST",
     headers: {
     "Origin": "*",
@@ -46,13 +45,15 @@ const fetchData = async(offset) => {
     },
     body: JSON.stringify({
         "resource": "sales",
-       "method": "GET"
+        "method": "GET",
+        "offset": offset
    })   
     })
     .then(res => res.json())
     .then(
     (resp) => {
     setSaleslist(resp.data);
+    console.log(resp.data);
     setalength(resp.total);
     setloading(false);
     },
@@ -65,7 +66,7 @@ const fetchData = async(offset) => {
 
 function handleDelete(id) {
 
-fetch(API_URL.url+"/sale", {
+fetch(API_URL.url+"/medicine-sale", {
 method: "DELETE",
 headers: {
 "Origin": "*",
@@ -76,7 +77,7 @@ headers: {
 },
 body: JSON.stringify({
 "id": `${id}`,
-"resource": "sales",
+    "resource": "medicine_sales",
 "method": "DELETE",
 })
 })
@@ -142,13 +143,14 @@ return(
                 </Column>
 
                 <Column minWidth={160} flexGrow={2}>
-                    <HeaderCell>Employee</HeaderCell>
-                    <Cell dataKey="employee_name" />
+                    <HeaderCell>Medicine Name</HeaderCell>
+                    <Cell>
+                        {(rowData, rowIndex) => {
+                            return <span style={{textTransform: "capitalize"}}>{rowData.medicine_formula.medicine.name}</span>;
+                        }}
+                    </Cell>
                 </Column> 
-                <Column minWidth={120} flexGrow={1}>
-                    <HeaderCell>Fuel Dispenser</HeaderCell>
-                    <Cell dataKey="fuel_dispenser_name" />
-                </Column>  
+
                 <Column minWidth={120} flexGrow={2}>
                     <HeaderCell>Sale Amount (Rs)</HeaderCell>
                    
@@ -159,21 +161,20 @@ return(
                     </Cell>
                 </Column>
                 <Column minWidth={100} flexGrow={2}>
-                    <HeaderCell>Start Meter</HeaderCell>
-                    <Cell dataKey="start_meter" />
-                </Column>  
-                <Column minWidth={100} flexGrow={2}>
-                    <HeaderCell>End Meter</HeaderCell>
-                    <Cell dataKey="end_meter" />
-                </Column> 
-                <Column minWidth={110} flexGrow={2}>
-                    <HeaderCell>Started At</HeaderCell>
-                    <Cell dataKey="started_at" />
+                    <HeaderCell>Brand</HeaderCell>
+
+                    <Cell>
+                        {(rowData, rowIndex) => {
+                            return <span style={{textTransform: "capitalize"}}>{rowData.medicine_formula.medicine.brand_id}</span>;
+                        }}
+                    </Cell>
                 </Column>
-                <Column minWidth={110} flexGrow={2}>
-                    <HeaderCell>Ended At</HeaderCell>
-                    <Cell dataKey="ended_at" />
+
+            <Column minWidth={100} flexGrow={2}>
+                    <HeaderCell>Unit Type</HeaderCell>
+                    <Cell style={{textTransform: "capitalize"}} dataKey="unit_id" />
                 </Column>
+
               
                 <Column width={100} fixed="right">
                     <HeaderCell>Action</HeaderCell>
@@ -187,7 +188,7 @@ return(
 
                         {(() => {
                             
-                            if(2<getpermit("sales")){
+                            if(2<getpermit("medicine_sales")){
                             return (  <Link to={{pathname: "/edit-sale", state: rowData.id }}> <Icon icon="edit2" />
                             </Link>)
                                     }
@@ -196,7 +197,7 @@ return(
                     })()}
 
                     <span className="ml-3">
-                    {3<getpermit("sales")? <a href alt={rowData.id} onClick={()=>handleDelete(rowData.id)}>
+                    {3<getpermit("medicine_sales")? <a href alt={rowData.id} onClick={()=>handleDelete(rowData.id)}>
                                 <Icon icon="trash" /> </a>:<span></span>}
                                 </span>
                         </>

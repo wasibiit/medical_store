@@ -23,7 +23,7 @@ const MedicinesinactiveList = (props) => {
   const [medicine_list, setMedicine_list] = useState([]);
   const [medicine_f_list, setMedicine_f_list] = useState([]);
   const [loading, setloading] = useState(false);
-  const [offset, setOffset] = useState(1);
+  const [offset, setOffset] = useState(0);
   const [alength, setalength] = useState();
 
 

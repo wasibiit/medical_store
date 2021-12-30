@@ -25,7 +25,7 @@ draggable: false,
 const Stock= props =>{
 const [stocks, setStocks] = useState([])
 const [loading, setloading] = useState(false)
-const [offset, setOffset] = useState(1)
+const [offset, setOffset] = useState(0)
 const [alength, setalength] = useState();
 
 const fetchData = async(offset) => {
@@ -52,6 +52,8 @@ const fetchData = async(offset) => {
     setStocks(resp.data);
     setalength(resp.total);
     setloading(false);
+
+    console.log(resp.data)
     },
     (error) => {
     }
@@ -67,7 +69,7 @@ fetchData(offset);
 
 function handleDelete(id) {
 
-fetch(API_URL.url+"/stock", {
+fetch(API_URL.url+"/entity-stock-history", {
 method: "DELETE",
 headers: {
 "Origin": "*",
@@ -78,8 +80,8 @@ headers: {
 },
 body: JSON.stringify({
 "id": `${id}`,
-"resource": "stocks",
-"method": "DELETE"
+    "resource": "entity_stock_history",
+    "method": "DELETE",
 })
 })
 .then(res => res.json())
@@ -143,8 +145,12 @@ return(
                 </Column>
 
                 <Column minWidth={120} flexGrow={2} >
-                    <HeaderCell>Stock Name</HeaderCell>
-                    <Cell dataKey="stock_type" />
+                    <HeaderCell>Medicine Name</HeaderCell>
+                    <Cell>
+                        {(rowData, rowIndex) => {
+                            return <span>{rowData.entity_pricing.medicine_formula.medicine.name}</span>;
+                        }}
+                    </Cell>
                 </Column>
 
                 <Column minWidth={120} flexGrow={2} >
@@ -189,8 +195,8 @@ return(
 
                         {(() => {
                         
-                            if(2<getpermit("stocks")){
-                            return (  <Link to={{pathname: "/edit-stock", state: rowData.id }}> <Icon icon="edit2" />
+                            if(2<getpermit("entity_stock_history")){
+                            return (  <Link to={{pathname: "/edit-stock", state: {id:rowData.id, name:rowData.entity_pricing.medicine_formula.medicine.name} }}> <Icon icon="edit2" />
                             </Link>)
                                     }
                              
@@ -198,7 +204,7 @@ return(
                     })()}
 
                     <span className="ml-3">
-                    {3<getpermit("stocks")? <a href alt={rowData.id} onClick={()=>handleDelete(rowData.id)}>
+                    {3<getpermit("entity_stock_history")? <a href alt={rowData.id} onClick={()=>handleDelete(rowData.id)}>
                                 <Icon icon="trash" /> </a>:<span></span>}
                                 </span>
                         </>

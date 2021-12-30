@@ -198,7 +198,7 @@ const Adminmenu=()=>{
                         
                         {(() => {
                             
-                            if(0<getpermit("sales")){ 
+                            if(0<getpermit("medicine_sales")){
 
                                 return (    <li className={`nav-item ${splitLocation[1] === "sales-list" ? "active" : ""}`}>
                                 <Link className="nav-link" to="/sales-list">

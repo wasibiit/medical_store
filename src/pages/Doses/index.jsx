@@ -30,7 +30,7 @@ const [prloading, setprloading] = useState(false);
 const [id, setId] = useState('');
 const [name, setName] = useState('');
 const [doseid, setDoseid] = useState('');
-const [offset, setOffset] = useState(1);
+const [offset, setOffset] = useState(0);
 const [alength, setalength] = useState();
 
 

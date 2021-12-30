@@ -466,7 +466,7 @@ return ('')
               {(() => { 
     
 
-    if(0<getpermit("sales")){ 
+    if(0<getpermit("medicine_sales")){
 
             return ( 
                     
@@ -490,7 +490,7 @@ return ('')
     {(() => { 
     
 
-    if(1<getpermit("sales")){ 
+    if(1<getpermit("medicine_sales")){
 
             return ( 
                     
@@ -514,7 +514,7 @@ return ('')
                {(() => { 
     
 
-    if(2<getpermit("sales")){ 
+    if(2<getpermit("medicine_sales")){
 
             return ( 
                     

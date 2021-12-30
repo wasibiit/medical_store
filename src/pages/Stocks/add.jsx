@@ -35,7 +35,6 @@ const AddStock = () => {
 
     }, []);
 
-
     const fetchMedicineslist = async () => {
 
         await fetch(API_URL.url + '/medicines', {
@@ -91,7 +90,6 @@ const AddStock = () => {
 
         setEntity_pricing_id(e.target.value)
         setFormula_id(e.target[e.target.selectedIndex].getAttribute('data-order'))
-
     }
 
     const fldChange = () => {

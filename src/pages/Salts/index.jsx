@@ -25,7 +25,7 @@ const SaltList= props =>{
 
 const [salts_list, setSalts_list] = useState([])
 const [loading, setloading] = useState(false)
-const [offset, setOffset] = useState(1)
+const [offset, setOffset] = useState(0)
 const [alength, setalength] = useState();
 
 const fetchData = async(offset) => {
