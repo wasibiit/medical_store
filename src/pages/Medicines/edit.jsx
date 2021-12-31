@@ -26,7 +26,6 @@ const [brand_id_list,setBrand_id_list] = useState([]);
 const [unit_id_list,setUnit_id_list] = useState([]);
 const [loading, setloading] = useState(false);
 const [prloading, setprloading] = useState(false);
-const [inputFields, setInputFields] = useState([]);
  const [salt_id_list,setSalt_id_list] = useState([]);
 
 const [dose_id_list,setDose_id_list] = useState([]);
@@ -35,10 +34,6 @@ const [dose_id_list,setDose_id_list] = useState([]);
 
 const [medicine_id,setMedicine_id] = useState('');
 const [medicine_name,setMedicine_name] = useState('');
-const [units_per_strip,setUnits_per_strip] = useState('');
-const [strips_per_pack,setStrips_per_pack] = useState('');
-const [price_per_pack,setPrice_per_pack] = useState('');
-const [unit_id,setUnit_id] = useState('');
 const [entity_type_id,setEntity_type_id] = useState('');
 const [brand_id,setBrand_id] = useState('');
 

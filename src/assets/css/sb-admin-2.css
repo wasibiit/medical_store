@@ -2111,6 +2111,84 @@ pre code {
   .table-responsive-xl>.table-bordered {
     border: 0;
   }
+  .card-header h4{
+    font-size: 18px !important;
+  }
+}
+
+@media(max-width:991px){
+  .chkbex span {
+
+    font-size: 12px;
+  }
+  .permitsec h5 {
+    margin-top: 0 !important;
+    margin-bottom: 10px;
+  }
+}
+
+@media(max-width:767px) {
+
+  .permitbox {
+    padding: 10px 10px !important;
+  }
+  #content .card-header{
+    padding: 10px !important;
+  }
+  .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  footer.sticky-footer {
+    padding: 1rem 0 !important;
+  }
+  .btn-icon-split .icon{
+    display: none !important;
+  }
+  .btn-icon-split .text{
+    font-size: 12px !important;
+  }
+  button[type='submit'] {
+    font-size: 14px !important;
+  }
+  #content .card-header{
+    display: inline-block !important;
+  }
+  .searchlistbx input {
+
+    height: 31px !important;
+    font-size: 14px !important;
+  }
+  .searchlistbx .btn {
+
+    height: 31px !important;
+    line-height: 30px !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+  }
+  form.user .btn-user {
+    font-size: 14px !important;
+    padding: 0.4rem 1rem !important;
+  }
+
+ .rmsc {
+   --rmsc-h: 33px !important;
+ }
+  form.user .form-control-user {
+    font-size: 14px !important;
+    height: 35px !important;
+  }
+  .card-body .p-5 {
+    padding: 15px 10px !important;
+  }
+  button.close {
+    position: absolute;
+    top: 0;
+    right: 6px;
+  }
+  .rs-table-cell-content {
+    font-size: 13px !important;
+  }
 }
 
 .table-responsive {

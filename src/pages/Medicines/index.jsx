@@ -14,7 +14,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import {createTheme, MuiThemeProvider} from "@material-ui/core/styles";
 import Pagination from "material-ui-flat-pagination";
 import Spinner from "react-bootstrap/Spinner";
-
 import $ from "jquery";
 
 const theme = createTheme();
@@ -424,7 +423,21 @@ const MedicinesList = (props) => {
                 setMedicine_ide(key.id);
                 setEntity_type_ide(key.entity_type_id);
 
-                setSalted_list(key.medicine_formulas);
+
+
+                let med_formulas = key.medicine_formulas;
+
+
+
+             let rst =   med_formulas.filter((key)=>{
+                    if(key.status_id==="active"){
+
+                        return key;
+                    }
+                })
+
+                setSalted_list(rst);
+
                 $("#listsaltmodal").modal("show");
 
             }
@@ -662,15 +675,15 @@ const MedicinesList = (props) => {
                             </Cell>
                         </Column>
 
-                        <Column minWidth={120} flexGrow={1}>
-                            <HeaderCell>Formulas</HeaderCell>
-
-                            <Cell>
-                                {(rowData) => {
-                                    return <span>{rowData.medicine_formulas.length}</span>;
-                                }}
-                            </Cell>
-                        </Column>
+                        {/*<Column minWidth={120} flexGrow={1}>*/}
+                        {/*    <HeaderCell>Formulas</HeaderCell>*/}
+                        
+                        {/*    <Cell>*/}
+                        {/*        {(rowData) => {*/}
+                        {/*            return <span>{rowData.medicine_formulas.length}</span>;*/}
+                        {/*        }}*/}
+                        {/*    </Cell>*/}
+                        {/*</Column>*/}
 
                         <Column minWidth={120} flexGrow={1}>
                             <HeaderCell>Brand</HeaderCell>
@@ -754,9 +767,7 @@ const MedicinesList = (props) => {
                 </div>
             </div>
 
-            <div
-                className="modal fade"
-                id="listsaltmodal">
+            <div className="modal fade" id="listsaltmodal">
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="row ">
@@ -783,9 +794,7 @@ const MedicinesList = (props) => {
                                                 data-toggle="modal"
                                                 data-target="#addformulamodal"
                                                 className="btn-user btn-sm btn btn-secondary"
-                                                // onClick={() =>
-                                                //   handleAddFormulafun(mdname,brdname,medicine_ide)
-                                                // }
+
                                             >
                                                 + Formula
                                             </button>
@@ -823,7 +832,7 @@ const MedicinesList = (props) => {
                                                                                     textTransform: "capitalize",
                                                                                 }}
                                                                             >
-                                          {mdname.replace(/_/g, " ")}
+                                          {key.medicine.name.replace(/_/g, " ")}
                                         </span>
                                                                         }
                                                                     </td>
@@ -834,7 +843,7 @@ const MedicinesList = (props) => {
                                                                                     textTransform: "capitalize",
                                                                                 }}
                                                                             >
-                                          {brdname.replace(/_/g, " ")}
+                                          {key.medicine.brand_id.replace(/_/g, " ")}
                                         </span>
                                                                         }
                                                                     </td>
